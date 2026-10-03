@@ -1,0 +1,287 @@
+{
+  "metadata": {
+    "timestamp": "2026-10-03 09:14:32",
+    "project": "M.Tech Cybersecurity Project 3 - Hybrid PQC TLS 1.3 & WireGuard",
+    "framework_version": "1.0.0"
+  },
+  "crypto_primitives": {
+    "X25519": {
+      "keygen_mean_us": 120.95,
+      "keygen_std_us": 1162.37,
+      "encaps_mean_us": 92.25,
+      "encaps_std_us": 46.96,
+      "decaps_mean_us": 44.14,
+      "decaps_std_us": 11.11,
+      "total_crypto_mean_us": 257.34,
+      "total_crypto_p95_us": 277.52,
+      "total_crypto_p99_us": 565.57,
+      "pk_size_bytes": 32,
+      "ct_size_bytes": 32,
+      "is_quantum_safe": false
+    },
+    "X25519+ML-KEM-512": {
+      "keygen_mean_us": 3048.43,
+      "keygen_std_us": 664.58,
+      "encaps_mean_us": 3944.35,
+      "encaps_std_us": 799.32,
+      "decaps_mean_us": 4348.63,
+      "decaps_std_us": 778.54,
+      "total_crypto_mean_us": 11341.41,
+      "total_crypto_p95_us": 14630.31,
+      "total_crypto_p99_us": 17077.65,
+      "pk_size_bytes": 832,
+      "ct_size_bytes": 800,
+      "is_quantum_safe": true
+    },
+    "X25519+ML-KEM-768": {
+      "keygen_mean_us": 261.43,
+      "keygen_std_us": 65.01,
+      "encaps_mean_us": 169.69,
+      "encaps_std_us": 49.83,
+      "decaps_mean_us": 120.52,
+      "decaps_std_us": 38.52,
+      "total_crypto_mean_us": 551.64,
+      "total_crypto_p95_us": 822.73,
+      "total_crypto_p99_us": 951.03,
+      "pk_size_bytes": 1216,
+      "ct_size_bytes": 1120,
+      "is_quantum_safe": true
+    },
+    "X25519+ML-KEM-1024": {
+      "keygen_mean_us": 305.02,
+      "keygen_std_us": 57.93,
+      "encaps_mean_us": 172.61,
+      "encaps_std_us": 34.5,
+      "decaps_mean_us": 126.58,
+      "decaps_std_us": 19.94,
+      "total_crypto_mean_us": 604.21,
+      "total_crypto_p95_us": 791.15,
+      "total_crypto_p99_us": 1024.19,
+      "pk_size_bytes": 1600,
+      "ct_size_bytes": 1600,
+      "is_quantum_safe": true
+    },
+    "ML-KEM-768": {
+      "keygen_mean_us": 199.59,
+      "keygen_std_us": 52.43,
+      "encaps_mean_us": 77.09,
+      "encaps_std_us": 20.09,
+      "decaps_mean_us": 74.16,
+      "decaps_std_us": 13.27,
+      "total_crypto_mean_us": 350.83,
+      "total_crypto_p95_us": 529.01,
+      "total_crypto_p99_us": 567.83,
+      "pk_size_bytes": 1184,
+      "ct_size_bytes": 1088,
+      "is_quantum_safe": true
+    },
+    "ML-KEM-1024": {
+      "keygen_mean_us": 294.16,
+      "keygen_std_us": 54.65,
+      "encaps_mean_us": 110.14,
+      "encaps_std_us": 24.44,
+      "decaps_mean_us": 102.9,
+      "decaps_std_us": 18.52,
+      "total_crypto_mean_us": 507.2,
+      "total_crypto_p95_us": 725.14,
+      "total_crypto_p99_us": 836.8,
+      "pk_size_bytes": 1568,
+      "ct_size_bytes": 1568,
+      "is_quantum_safe": true
+    }
+  },
+  "network_loss_curves": {
+    "loss_rates_percent": [
+      0.0,
+      0.5,
+      1.0,
+      2.0,
+      3.0,
+      5.0
+    ],
+    "X25519": [
+      40.25,
+      40.02,
+      46.08,
+      43.9,
+      53.59,
+      57.42
+    ],
+    "X25519+ML-KEM-512": [
+      52.12,
+      55.09,
+      62.41,
+      67.83,
+      76.74,
+      80.93
+    ],
+    "X25519+ML-KEM-768": [
+      41.19,
+      46.91,
+      48.63,
+      50.27,
+      68.82,
+      65.04
+    ],
+    "X25519+ML-KEM-1024": [
+      40.81,
+      46.84,
+      42.57,
+      50.58,
+      67.1,
+      61.76
+    ],
+    "Adaptive_Optimization": [
+      40.58,
+      42.55,
+      48.08,
+      60.82,
+      74.94,
+      75.69
+    ]
+  },
+  "throughput": {
+    "concurrency_levels": [
+      1,
+      5,
+      10,
+      20
+    ],
+    "suites": {
+      "X25519": [
+        4321.5,
+        4204.7,
+        4760.5,
+        3487.4
+      ],
+      "X25519+ML-KEM-512": [
+        65.1,
+        75.0,
+        34.2,
+        17.5
+      ],
+      "X25519+ML-KEM-768": [
+        1338.6,
+        1767.5,
+        1624.0,
+        1777.5
+      ],
+      "X25519+ML-KEM-1024": [
+        1302.5,
+        1201.7,
+        1195.4,
+        1213.5
+      ],
+      "ML-KEM-768": [
+        1780.1,
+        2077.4,
+        2090.5,
+        1915.4
+      ]
+    }
+  },
+  "memory_profile": {
+    "X25519": {
+      "public_key_bytes": 32,
+      "ciphertext_bytes": 32,
+      "session_state_bytes": 436,
+      "session_state_kb": 0.43
+    },
+    "X25519+ML-KEM-512": {
+      "public_key_bytes": 832,
+      "ciphertext_bytes": 800,
+      "session_state_bytes": 3572,
+      "session_state_kb": 3.49
+    },
+    "X25519+ML-KEM-768": {
+      "public_key_bytes": 1216,
+      "ciphertext_bytes": 1120,
+      "session_state_bytes": 4980,
+      "session_state_kb": 4.86
+    },
+    "X25519+ML-KEM-1024": {
+      "public_key_bytes": 1600,
+      "ciphertext_bytes": 1600,
+      "session_state_bytes": 6708,
+      "session_state_kb": 6.55
+    },
+    "ML-KEM-768": {
+      "public_key_bytes": 1184,
+      "ciphertext_bytes": 1088,
+      "session_state_bytes": 4852,
+      "session_state_kb": 4.74
+    },
+    "ML-KEM-1024": {
+      "public_key_bytes": 1568,
+      "ciphertext_bytes": 1568,
+      "session_state_bytes": 6580,
+      "session_state_kb": 6.43
+    }
+  },
+  "hardware_energy": {
+    "x86_64_server": {
+      "X25519": {
+        "latency_us": 257.34,
+        "cpu_cycles": 823487,
+        "energy_microjoules": 11580.3
+      },
+      "X25519+ML-KEM-512": {
+        "latency_us": 11341.41,
+        "cpu_cycles": 36292512,
+        "energy_microjoules": 510363.45
+      },
+      "X25519+ML-KEM-768": {
+        "latency_us": 551.64,
+        "cpu_cycles": 1765247,
+        "energy_microjoules": 24823.8
+      },
+      "X25519+ML-KEM-1024": {
+        "latency_us": 604.21,
+        "cpu_cycles": 1933472,
+        "energy_microjoules": 27189.45
+      },
+      "ML-KEM-768": {
+        "latency_us": 350.83,
+        "cpu_cycles": 1122655,
+        "energy_microjoules": 15787.35
+      },
+      "ML-KEM-1024": {
+        "latency_us": 507.2,
+        "cpu_cycles": 1623040,
+        "energy_microjoules": 22824.0
+      }
+    },
+    "arm_cortex_edge": {
+      "X25519": {
+        "latency_us": 2702.07,
+        "cpu_cycles": 3242483,
+        "energy_microjoules": 4863.73
+      },
+      "X25519+ML-KEM-512": {
+        "latency_us": 119084.8,
+        "cpu_cycles": 142901766,
+        "energy_microjoules": 214352.65
+      },
+      "X25519+ML-KEM-768": {
+        "latency_us": 5792.22,
+        "cpu_cycles": 6950664,
+        "energy_microjoules": 10426.0
+      },
+      "X25519+ML-KEM-1024": {
+        "latency_us": 6344.2,
+        "cpu_cycles": 7613045,
+        "energy_microjoules": 11419.57
+      },
+      "ML-KEM-768": {
+        "latency_us": 3683.71,
+        "cpu_cycles": 4420457,
+        "energy_microjoules": 6630.69
+      },
+      "ML-KEM-1024": {
+        "latency_us": 5325.6,
+        "cpu_cycles": 6390719,
+        "energy_microjoules": 9586.08
+      }
+    }
+  }
+}

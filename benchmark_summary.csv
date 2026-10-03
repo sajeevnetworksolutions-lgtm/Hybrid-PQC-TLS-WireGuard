@@ -1,0 +1,7 @@
+Cipher Suite,Security Level,Quantum Safe,PK Size (B),CT Size (B),Crypto Time (us),Clean LAN Latency (ms),Lossy 2% Latency (ms),Peak Conns/sec,Session Mem (KB)
+X25519,Classical,False,32,32,257.34,40.25,43.9,4760.5,0.43
+X25519+ML-KEM-512,Quantum Safe,True,832,800,11341.41,52.12,67.83,75.0,3.49
+X25519+ML-KEM-768,Quantum Safe,True,1216,1120,551.64,41.19,50.27,1777.5,4.86
+X25519+ML-KEM-1024,Quantum Safe,True,1600,1600,604.21,40.81,50.58,1302.5,6.55
+ML-KEM-768,Quantum Safe,True,1184,1088,350.83,40.35083,40.35083,2090.5,4.74
+ML-KEM-1024,Quantum Safe,True,1568,1568,507.2,40.5072,40.5072,1000.0,6.43
