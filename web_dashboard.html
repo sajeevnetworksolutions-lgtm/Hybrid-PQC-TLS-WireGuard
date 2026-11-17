@@ -3,269 +3,490 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hybrid Post-Quantum TLS 1.3 & WireGuard VPNs - Interactive Dashboard</title>
+  <title>Hybrid Post-Quantum Cryptography - TLS 1.3 & WireGuard Framework</title>
   <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
   <style>
     :root {
-      --bg: #0f172a;
-      --card-bg: #1e293b;
-      --border: #334155;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-      --accent: #38bdf8;
-      --accent-glow: rgba(56, 189, 248, 0.2);
-      --success: #34d399;
-      --warning: #fbbf24;
-      --danger: #f87171;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --border-dark: #cbd5e1;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --success: #059669;
+      --warning: #d97706;
+      --danger: #e11d48;
     }
     body {
-      background: var(--bg);
+      background-color: var(--bg);
       color: var(--text);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     }
     .custom-scrollbar::-webkit-scrollbar {
       width: 6px;
       height: 6px;
     }
     .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: var(--border);
+      background: #cbd5e1;
       border-radius: 4px;
+    }
+    .code-box {
+      background-color: #f1f5f9;
+      color: #0f172a;
+      border: 1px solid #e2e8f0;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    .badge-light {
+      background-color: #e0e7ff;
+      color: #3730a3;
+      border: 1px solid #c7d2fe;
     }
   </style>
 </head>
-<body class="min-h-screen p-4 md:p-8">
+<body class="min-h-screen p-4 md:p-8 custom-scrollbar">
   <div class="max-w-7xl mx-auto space-y-6">
-    
-    <!-- Top Header & Badges -->
-    <header class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl relative overflow-hidden">
-      <div class="absolute -right-12 -top-12 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+    <!-- Top Header & Status Ribbon (Clean Light Mode) -->
+    <header class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm relative overflow-hidden">
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div class="flex items-center gap-2 mb-2">
-            <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-cyan-950 text-cyan-400 border border-cyan-800">M.Tech Cybersecurity Project 3</span>
-            <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800">NIST FIPS 203 ML-KEM</span>
-            <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-indigo-950 text-indigo-400 border border-indigo-800">RFC 8446 TLS 1.3</span>
-            <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-violet-950 text-violet-400 border border-violet-800">Noise IK WireGuard</span>
+          <div class="flex flex-wrap items-center gap-2 mb-2">
+            <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">M.Tech Cybersecurity Project 3</span>
+            <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">NIST FIPS 203 ML-KEM</span>
+            <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-blue-50 text-blue-700 border border-blue-200">RFC 8446 TLS 1.3</span>
+            <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-amber-50 text-amber-700 border border-amber-200">Noise_IKpsk2 WireGuard</span>
+            <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-purple-50 text-purple-700 border border-purple-200 font-mono">Light Mode</span>
           </div>
-          <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
-            Hybrid Post-Quantum Key Encapsulation Framework
+          <h1 class="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">
+            Hybrid Post-Quantum Cryptography Framework
           </h1>
-          <p class="text-slate-400 text-sm mt-1 max-w-3xl">
-            High-Throughput Quantum-Resistant Key Exchange with Adaptive MTU & Packet Loss Optimization across TLS 1.3 and WireGuard VPN Tunnels.
+          <p class="text-slate-600 text-sm mt-1 max-w-3xl">
+            Real-time evaluation, live TLS 1.3 hybrid key negotiation, experimental WireGuard Noise_IKpsk2 tunnel framing, and adaptive latency-loss optimization.
           </p>
         </div>
-        <div class="flex flex-wrap md:flex-col items-end gap-2 text-right">
-          <div id="backend-status-pill" class="flex items-center gap-2 text-amber-400 text-sm font-medium">
-            <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
-            Connecting to Backend API...
+        <div class="flex flex-wrap md:flex-col items-start md:items-end gap-2">
+          <div id="backend-status-pill" class="flex items-center gap-2 text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-full text-xs font-semibold">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
+            Checking Backend API (http://127.0.0.1:8000)...
           </div>
-          <a href="https://github.com/sajeevnetworksolutions-lgtm/Hybrid-PQC-TLS-WireGuard" target="_blank" class="text-xs text-cyan-400 hover:text-cyan-300 underline flex items-center gap-1">
-            GitHub: sajeevnetworksolutions-lgtm/Hybrid-PQC-TLS-WireGuard &rarr;
-          </a>
+          <div class="text-xs text-slate-500 font-mono" id="env-backend-info">
+            FastAPI 0.136 · OpenSSL 4.0.0 · Rust mlkem 0.2.0
+          </div>
         </div>
       </div>
 
       <!-- Navigation Tabs -->
-      <div class="flex flex-wrap gap-2 mt-6 pt-4 border-t border-slate-800">
-        <button onclick="switchTab('tab-sim')" id="btn-tab-sim" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition-all bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
-          ⚡ Interactive Handshake Simulator
+      <nav class="flex flex-wrap gap-2 mt-6 pt-4 border-t border-slate-100">
+        <button onclick="switchTab('tab-handshakes')" id="btn-tab-handshakes" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all bg-indigo-600 text-white shadow-sm">
+          ⚡ Live Handshakes
         </button>
-        <button onclick="switchTab('tab-adaptive')" id="btn-tab-adaptive" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition-all bg-slate-800 text-slate-300 hover:bg-slate-700">
-          🛰️ Adaptive Engine & Latency Model
+        <button onclick="switchTab('tab-keygen')" id="btn-tab-keygen" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200">
+          🔑 KeyGen & KEM Sandbox
         </button>
-        <button onclick="switchTab('tab-bench')" id="btn-tab-bench" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition-all bg-slate-800 text-slate-300 hover:bg-slate-700">
-          📊 Benchmark Analytics & IEEE Plots
+        <button onclick="switchTab('tab-encrypt')" id="btn-tab-encrypt" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200">
+          🔒 AEAD Encrypt & Decrypt
         </button>
-        <button onclick="switchTab('tab-proto')" id="btn-tab-proto" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition-all bg-slate-800 text-slate-300 hover:bg-slate-700">
-          🛡️ WireGuard & TLS 1.3 Packets
+        <button onclick="switchTab('tab-adaptive')" id="btn-tab-adaptive" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200">
+          🛰️ Adaptive Engine (Eq. 3)
         </button>
-      </div>
+        <button onclick="switchTab('tab-benchmarks')" id="btn-tab-benchmarks" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200">
+          📊 Benchmark Telemetry
+        </button>
+        <button onclick="switchTab('tab-specs')" id="btn-tab-specs" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200">
+          🛡️ Architecture & Specs
+        </button>
+      </nav>
     </header>
 
-    <!-- TAB 1: Live Handshake Simulator -->
-    <div id="tab-sim" class="tab-content space-y-6">
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        <!-- Controls Sidebar -->
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
-          <h3 class="font-bold text-white text-base flex items-center gap-2">
-            ⚙️ Handshake Configuration
-          </h3>
-          <div>
-            <label class="text-xs text-slate-400 block mb-1.5 font-medium">Select Cipher Suite</label>
-            <select id="sim-suite" onchange="runSimulation()" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-cyan-500">
-              <option value="X25519+ML-KEM-768">Hybrid: X25519 + ML-KEM-768 (NIST Level 3 - Standard)</option>
-              <option value="X25519+ML-KEM-512">Hybrid: X25519 + ML-KEM-512 (NIST Level 1 - Edge/MTU Guard)</option>
-              <option value="X25519+ML-KEM-1024">Hybrid: X25519 + ML-KEM-1024 (NIST Level 5 - Maximum Assurance)</option>
-              <option value="X25519">Classical: X25519 Only (Vulnerable Baseline)</option>
-            </select>
+    <!-- ===================================================================== -->
+    <!-- TAB 1: LIVE PROTOCOL HANDSHAKES (TLS 1.3 & WIREGUARD)                 -->
+    <!-- ===================================================================== -->
+    <div id="tab-handshakes" class="tab-content space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <!-- TLS 1.3 Box -->
+        <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div>
+              <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-blue-600"></span>
+                RFC 8446 TLS 1.3 Hybrid Handshake
+              </h2>
+              <p class="text-xs text-slate-500">Genuine OpenSSL 4.0.0 C-bindings with X25519MLKEM768 named group</p>
+            </div>
+            <span class="px-2 py-0.5 text-xs font-semibold rounded bg-blue-50 text-blue-700 border border-blue-200">TCP / TLSv1.3</span>
           </div>
 
-          <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-lg space-y-2 text-xs text-slate-300">
-            <div class="flex justify-between">
-              <span class="text-slate-400">Classical Primitive:</span>
-              <span class="font-mono text-cyan-400">Curve25519 (ECDH)</span>
+          <div class="space-y-3">
+            <div>
+              <label class="text-xs font-semibold text-slate-700 block mb-1">Key Exchange Group Mode</label>
+              <select id="tls-mode-select" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-800 font-medium focus:outline-none focus:border-indigo-500">
+                <option value="hybrid">Hybrid: X25519MLKEM768 (Draft IETF TLS Hybrid - Recommended)</option>
+                <option value="classical">Classical Baseline: X25519 (ECDH Curve25519 Only)</option>
+                <option value="mlkem1024">Pure Post-Quantum: MLKEM1024 (NIST Category 5)</option>
+              </select>
             </div>
-            <div class="flex justify-between">
-              <span class="text-slate-400">PQC Primitive:</span>
-              <span id="info-pqc" class="font-mono text-emerald-400">ML-KEM-768 (Kyber)</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-slate-400">Quantum Security:</span>
-              <span id="info-quantum" class="font-semibold text-emerald-400">Provable Dual IND-CCA2</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-slate-400">Public Key Size:</span>
-              <span id="info-pk-size" class="font-mono text-amber-300">1,216 Bytes</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-slate-400">Ciphertext Size:</span>
-              <span id="info-ct-size" class="font-mono text-amber-300">1,120 Bytes</span>
-            </div>
+
+            <button onclick="triggerTLSHandshake()" id="btn-run-tls" class="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-semibold transition-all shadow-sm flex items-center justify-center gap-2">
+              <span>🚀 Execute TLS 1.3 Handshake</span>
+            </button>
           </div>
 
-          <button onclick="runSimulation()" class="w-full py-2.5 px-4 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg text-sm font-semibold transition-all shadow-lg shadow-cyan-900/30">
-            🚀 Run Live Handshake Flow
-          </button>
+          <!-- TLS Results Box -->
+          <div id="tls-result-card" class="bg-slate-50 border border-slate-200 rounded-lg p-4 space-y-2 text-xs">
+            <div class="flex justify-between font-medium">
+              <span class="text-slate-500">Status:</span>
+              <span id="tls-res-status" class="font-bold text-slate-700">Idle - Click execute</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-500">Negotiated Group:</span>
+              <span id="tls-res-group" class="font-mono font-semibold text-slate-800">—</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-500">Cipher Suite:</span>
+              <span id="tls-res-cipher" class="font-mono text-slate-800">—</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-500">Handshake Latency:</span>
+              <span id="tls-res-time" class="font-mono font-bold text-indigo-700">—</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-500">Certificate Verification:</span>
+              <span id="tls-res-cert" class="font-semibold text-slate-800">—</span>
+            </div>
+            <div class="pt-2 border-t border-slate-200">
+              <span class="text-slate-500 block mb-1">Derived Traffic Secret Verification (c_ap == s_ap):</span>
+              <div id="tls-res-secret" class="code-box p-2 rounded text-[11px] break-all text-slate-600">
+                Awaiting handshake trigger...
+              </div>
+            </div>
+          </div>
         </div>
 
-        <!-- Simulation Pipeline Visualization -->
-        <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-5">
-          <div class="flex items-center justify-between">
-            <h3 class="font-bold text-white text-base">Handshake Exchange Execution Trace</h3>
-            <span id="sim-status" class="px-2.5 py-1 text-xs rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 font-medium">
-              Handshake Verified (Secrets Match)
-            </span>
+        <!-- WireGuard Prototype Box -->
+        <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div>
+              <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                Experimental WireGuard Hybrid Handshake
+              </h2>
+              <p class="text-xs text-slate-500">Extended Noise_IKpsk2 pattern (Userspace UDP Research Prototype)</p>
+            </div>
+            <span class="px-2 py-0.5 text-xs font-semibold rounded bg-amber-50 text-amber-700 border border-amber-200">UDP Layer</span>
           </div>
 
-          <!-- Step 1: Initiator KeyGen -->
-          <div class="p-4 bg-slate-950 border border-slate-800 rounded-lg space-y-2">
-            <div class="flex justify-between items-center text-xs">
-              <span class="font-bold text-cyan-400 uppercase tracking-wider">Step 1: Client Initiator KeyGen</span>
-              <span id="sim-time-keygen" class="font-mono text-slate-400">107.37 μs</span>
+          <div class="space-y-3">
+            <div>
+              <label class="text-xs font-semibold text-slate-700 block mb-1">Noise IK Key Exchange Mode</label>
+              <select id="wg-mode-select" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-800 font-medium focus:outline-none focus:border-indigo-500">
+                <option value="hybrid">Hybrid: ML-KEM-768 (Msg 1: 1,332B | Msg 2: 1,180B)</option>
+                <option value="mlkem512">Hybrid: ML-KEM-512 (Msg 1: 948B | Fits 1,280B IPv6 MTU)</option>
+                <option value="mlkem1024">Hybrid: ML-KEM-1024 (Msg 1: 1,716B | High Assurance)</option>
+                <option value="classical">Classical Baseline: X25519 Noise_IK (Msg 1: 148B | Msg 2: 92B)</option>
+              </select>
             </div>
-            <p class="text-xs text-slate-400">Generates composite public key: 32B X25519 + ML-KEM Public Key in polynomial ring \(R_q = \mathbb{Z}_q[X]/(X^{256} + 1)\).</p>
-            <div class="font-mono text-xs text-slate-300 bg-slate-900 p-2.5 rounded border border-slate-800 overflow-x-auto custom-scrollbar">
-              <span class="text-slate-500">// Client Composite Public Key (pk_ec || pk_pqc):</span><br>
-              <span id="sim-hex-pk" class="text-cyan-300">a3f9e8d1045c... [1,216 bytes generated]</span>
-            </div>
+
+            <button onclick="triggerWireGuardHandshake()" id="btn-run-wg" class="w-full py-2.5 px-4 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-sm font-semibold transition-all shadow-sm flex items-center justify-center gap-2">
+              <span>🚀 Execute WireGuard Handshake</span>
+            </button>
           </div>
 
-          <!-- Step 2: Responder Encapsulation -->
-          <div class="p-4 bg-slate-950 border border-slate-800 rounded-lg space-y-2">
-            <div class="flex justify-between items-center text-xs">
-              <span class="font-bold text-indigo-400 uppercase tracking-wider">Step 2: Server Responder Encapsulation & ECDH</span>
-              <span id="sim-time-encaps" class="font-mono text-slate-400">921.40 μs</span>
+          <!-- WireGuard Results Box -->
+          <div id="wg-result-card" class="bg-slate-50 border border-slate-200 rounded-lg p-4 space-y-2 text-xs">
+            <div class="flex justify-between font-medium">
+              <span class="text-slate-500">Status:</span>
+              <span id="wg-res-status" class="font-bold text-slate-700">Idle - Click execute</span>
             </div>
-            <p class="text-xs text-slate-400">Computes classical \(ss_{ec} = \text{ECDH}(sk_s, pk_c)\) and \( (c_{pqc}, ss_{pqc}) = \text{ML-KEM.Encaps}(pk_{pqc}) \).</p>
-            <div class="font-mono text-xs text-slate-300 bg-slate-900 p-2.5 rounded border border-slate-800 overflow-x-auto custom-scrollbar">
-              <span class="text-slate-500">// Server Encapsulated Ciphertext (c_pqc):</span><br>
-              <span id="sim-hex-ct" class="text-indigo-300">7d81ef34a01c... [1,088 bytes ciphertext]</span>
+            <div class="flex justify-between">
+              <span class="text-slate-500">Initiation Msg 1 Size:</span>
+              <span id="wg-res-msg1" class="font-mono font-semibold text-slate-800">—</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-500">Response Msg 2 Size:</span>
+              <span id="wg-res-msg2" class="font-mono font-semibold text-slate-800">—</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-500">Handshake Latency:</span>
+              <span id="wg-res-time" class="font-mono font-bold text-amber-700">—</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-500">Anti-Replay Mechanism:</span>
+              <span id="wg-res-replay" class="font-semibold text-slate-800">TAI64N + 64-bit Sliding Window</span>
+            </div>
+            <div class="pt-2 border-t border-slate-200">
+              <span class="text-slate-500 block mb-1">Derived Master Session Key Verification:</span>
+              <div id="wg-res-secret" class="code-box p-2 rounded text-[11px] break-all text-slate-600">
+                Awaiting handshake trigger...
+              </div>
             </div>
           </div>
+        </div>
 
-          <!-- Step 3: Dual HKDF Secret Derivation -->
-          <div class="p-4 bg-slate-950 border border-slate-800 rounded-lg space-y-2">
-            <div class="flex justify-between items-center text-xs">
-              <span class="font-bold text-emerald-400 uppercase tracking-wider">Step 3: Dual HKDF Secret Derivation (Eq. 2)</span>
-              <span id="sim-time-decaps" class="font-mono text-slate-400">392.40 μs</span>
-            </div>
-            <p class="text-xs text-slate-400">\(K_{hybrid} = \text{HKDF-Extract}(\text{Salt}, \text{ECDH}(sk_{ec}, pk_{ec}) \mathbin{\Vert} \text{ML-KEM.Decaps}(sk_{pqc}, c_{pqc}))\)</p>
-            <div class="font-mono text-xs text-slate-300 bg-slate-900 p-2.5 rounded border border-slate-800 overflow-x-auto custom-scrollbar">
-              <span class="text-slate-500">// Derived 256-bit Tunnel Master Secret (PRK):</span><br>
-              <span id="sim-hex-master" class="text-emerald-400 font-bold">31a3e7b5ddc5d98e084bdd7946772267943f9464ce74285186f5c0d4e874c0e5</span>
-            </div>
-          </div>
+      </div>
 
+      <!-- Protocol Notice Card -->
+      <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-xs text-blue-900 leading-relaxed flex items-start gap-3">
+        <span class="text-base">ℹ️</span>
+        <div>
+          <strong class="font-bold">Protocol Boundary & Standards Compliance:</strong>
+          TLS 1.3 is negotiated using native OpenSSL 4.0.0 bindings implementing standard RFC 8446 records and IETF hybrid drafts.
+          The WireGuard implementation is an <em>Experimental Hybrid Post-Quantum Research Prototype</em> extending Noise_IKpsk2 with ML-KEM parameters at the userspace UDP transport layer. It is not wire-compatible with standard Linux kernel WireGuard peers.
         </div>
       </div>
     </div>
 
-    <!-- TAB 2: Adaptive Engine & Latency Model -->
+    <!-- ===================================================================== -->
+    <!-- TAB 2: KEY GENERATION & KEM PLAYGROUND                                -->
+    <!-- ===================================================================== -->
+    <div id="tab-keygen" class="tab-content hidden space-y-6">
+      <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-6">
+        <div>
+          <h2 class="text-lg font-bold text-slate-900">NIST FIPS 203 ML-KEM Key Generation & Encapsulation</h2>
+          <p class="text-xs text-slate-500 mt-1">
+            Test actual post-quantum Module-Lattice Key Encapsulation (ML-KEM) and composite classical-quantum public key generation in real time.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="text-xs font-semibold text-slate-700 block mb-1">Select Cipher Suite</label>
+            <select id="kem-suite-select" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-800 font-medium focus:outline-none focus:border-indigo-500">
+              <option value="X25519+ML-KEM-768">Hybrid: X25519 + ML-KEM-768 (NIST Level 3)</option>
+              <option value="X25519+ML-KEM-512">Hybrid: X25519 + ML-KEM-512 (NIST Level 1)</option>
+              <option value="X25519+ML-KEM-1024">Hybrid: X25519 + ML-KEM-1024 (NIST Level 5)</option>
+              <option value="ML-KEM-768">Pure PQC: ML-KEM-768 (Kyber-768)</option>
+              <option value="ML-KEM-1024">Pure PQC: ML-KEM-1024 (Kyber-1024)</option>
+              <option value="X25519">Classical: X25519 ECDH Only</option>
+            </select>
+          </div>
+          <div class="flex items-end">
+            <button onclick="triggerKeyGen()" class="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-semibold transition-all shadow-sm">
+              🔑 Step 1: Generate Ephemeral Keypair
+            </button>
+          </div>
+          <div class="flex items-end">
+            <button onclick="triggerEncapsulate()" id="btn-encaps" class="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-semibold transition-all shadow-sm" disabled>
+              📦 Step 2: Encapsulate & Derive Secret
+            </button>
+          </div>
+        </div>
+
+        <!-- Keygen Displays -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-slate-50 border border-slate-200 rounded-lg p-4 space-y-2">
+            <div class="flex justify-between items-center">
+              <span class="text-xs font-bold uppercase tracking-wider text-indigo-700">Initiator Public Key</span>
+              <span id="kem-pk-len" class="text-xs font-mono text-slate-500">0 Bytes</span>
+            </div>
+            <textarea id="kem-pk-hex" readonly class="w-full h-32 code-box p-2.5 rounded text-xs text-slate-800 resize-none focus:outline-none" placeholder="Click 'Generate Ephemeral Keypair' to generate real public key bytes..."></textarea>
+            <div class="flex justify-between text-xs text-slate-500">
+              <span>KeyGen Execution Time:</span>
+              <span id="kem-keygen-time" class="font-mono font-bold text-slate-800">—</span>
+            </div>
+          </div>
+
+          <div class="bg-slate-50 border border-slate-200 rounded-lg p-4 space-y-2">
+            <div class="flex justify-between items-center">
+              <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Responder Ciphertext</span>
+              <span id="kem-ct-len" class="text-xs font-mono text-slate-500">0 Bytes</span>
+            </div>
+            <textarea id="kem-ct-hex" readonly class="w-full h-32 code-box p-2.5 rounded text-xs text-slate-800 resize-none focus:outline-none" placeholder="Click 'Step 2: Encapsulate' to generate real module-lattice ciphertext..."></textarea>
+            <div class="flex justify-between text-xs text-slate-500">
+              <span>Encapsulation Execution Time:</span>
+              <span id="kem-encaps-time" class="font-mono font-bold text-slate-800">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Derived Secret Verification -->
+        <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-4 space-y-2">
+          <div class="flex justify-between items-center">
+            <span class="text-xs font-bold uppercase tracking-wider text-emerald-800">
+              Authenticated Derived 256-Bit Master Secret (PRK)
+            </span>
+            <span id="kem-match-badge" class="px-2 py-0.5 text-xs font-semibold rounded bg-emerald-200 text-emerald-800">
+              Awaiting Derivation
+            </span>
+          </div>
+          <div id="kem-shared-secret" class="code-box p-2 rounded text-xs break-all font-mono font-bold text-emerald-950">
+            0000000000000000000000000000000000000000000000000000000000000000
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 3: AUTHENTICATED AEAD ENCRYPTION & DECRYPTION SANDBOX             -->
+    <!-- ===================================================================== -->
+    <div id="tab-encrypt" class="tab-content hidden space-y-6">
+      <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-6">
+        <div>
+          <h2 class="text-lg font-bold text-slate-900">Authenticated AEAD Symmetric Encryption & Decryption</h2>
+          <p class="text-xs text-slate-500 mt-1">
+            Test real authenticated encryption (AES-256-GCM / ChaCha20-Poly1305) using post-quantum derived keys, including tamper detection.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Plaintext / Encryption Form -->
+          <div class="space-y-4">
+            <div>
+              <label class="text-xs font-semibold text-slate-700 block mb-1">Cipher Algorithm</label>
+              <select id="aead-algo-select" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-800 font-medium focus:outline-none focus:border-indigo-500">
+                <option value="AES-256-GCM">AES-256-GCM (NIST SP 800-38D - 128-bit Auth Tag)</option>
+                <option value="ChaCha20-Poly1305">ChaCha20-Poly1305 (RFC 8439 - High-Speed Stream)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="text-xs font-semibold text-slate-700 block mb-1">Plaintext Message</label>
+              <textarea id="aead-input-text" rows="4" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-3 text-sm text-slate-800 focus:outline-none focus:border-indigo-500" placeholder="Type a message to encrypt using post-quantum derived keying material...">Confidential post-quantum research payload: Quantum adversaries cannot decrypt this message using Shor's algorithm.</textarea>
+            </div>
+
+            <button onclick="triggerEncrypt()" class="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-semibold transition-all shadow-sm">
+              🔒 Encrypt Plaintext
+            </button>
+          </div>
+
+          <!-- Ciphertext / Decryption Form -->
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between items-center mb-1">
+                <label class="text-xs font-semibold text-slate-700">Encrypted Ciphertext (Hex)</label>
+                <span id="aead-enc-time" class="text-xs font-mono text-slate-500">0.00 μs</span>
+              </div>
+              <textarea id="aead-output-ct" rows="4" readonly class="w-full code-box rounded-lg p-3 text-xs text-slate-800 focus:outline-none resize-none" placeholder="Encrypted ciphertext will appear here..."></textarea>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="triggerDecrypt(false)" id="btn-decrypt" class="w-full py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition-all shadow-sm" disabled>
+                🔓 Decrypt Valid
+              </button>
+              <button onclick="triggerDecrypt(true)" id="btn-tamper" class="w-full py-2.5 px-3 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-semibold transition-all shadow-sm" disabled>
+                ⚠️ Tamper & Decrypt
+              </button>
+            </div>
+
+            <!-- Decryption Result -->
+            <div id="aead-dec-card" class="bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs space-y-1">
+              <div class="flex justify-between">
+                <span class="text-slate-500 font-medium">Decryption Status:</span>
+                <span id="aead-dec-status" class="font-bold text-slate-700">Awaiting input</span>
+              </div>
+              <div class="text-slate-500 font-medium">Decrypted Output:</div>
+              <div id="aead-dec-text" class="code-box p-2 rounded text-xs break-all text-slate-800 min-h-[36px]">
+                —
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 4: ADAPTIVE CIPHER NEGOTIATION ENGINE                             -->
+    <!-- ===================================================================== -->
     <div id="tab-adaptive" class="tab-content hidden space-y-6">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        <!-- Network Telemetry Sliders -->
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-5">
-          <h3 class="font-bold text-white text-base">🛰️ Channel Telemetry Inputs</h3>
+
+        <!-- Sliders Sidebar -->
+        <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-5">
+          <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
+            🛰️ Link Telemetry Inputs
+          </h2>
 
           <!-- RTT Slider -->
           <div>
-            <div class="flex justify-between text-xs mb-1">
-              <span class="text-slate-400 font-medium">Link Round-Trip Time (RTT):</span>
-              <span id="val-rtt" class="font-mono font-bold text-cyan-400">20.0 ms</span>
+            <div class="flex justify-between text-xs mb-1 font-semibold">
+              <span class="text-slate-700">Round-Trip Time (RTT):</span>
+              <span id="slider-rtt-val" class="font-mono text-indigo-600 font-bold">25.0 ms</span>
             </div>
-            <input type="range" id="slider-rtt" min="1" max="150" value="20" oninput="updateAdaptive()" class="w-full accent-cyan-500 bg-slate-800 rounded-lg">
+            <input type="range" id="slider-rtt" min="1" max="150" value="25" oninput="updateAdaptiveSliders()" class="w-full accent-indigo-600 bg-slate-200 rounded-lg h-2 cursor-pointer">
           </div>
 
           <!-- Loss Rate Slider -->
           <div>
-            <div class="flex justify-between text-xs mb-1">
-              <span class="text-slate-400 font-medium">Packet Drop Rate (\(P_{loss}\)):</span>
-              <span id="val-loss" class="font-mono font-bold text-amber-400">0.0 %</span>
+            <div class="flex justify-between text-xs mb-1 font-semibold">
+              <span class="text-slate-700">Packet Drop Rate (P_loss):</span>
+              <span id="slider-loss-val" class="font-mono text-amber-600 font-bold">0.0 %</span>
             </div>
-            <input type="range" id="slider-loss" min="0" max="80" value="0" step="1" oninput="updateAdaptive()" class="w-full accent-amber-500 bg-slate-800 rounded-lg">
+            <input type="range" id="slider-loss" min="0" max="80" value="0" step="1" oninput="updateAdaptiveSliders()" class="w-full accent-amber-600 bg-slate-200 rounded-lg h-2 cursor-pointer">
           </div>
 
           <!-- MTU Slider -->
           <div>
-            <div class="flex justify-between text-xs mb-1">
-              <span class="text-slate-400 font-medium">Path MTU (PMTU):</span>
-              <span id="val-mtu" class="font-mono font-bold text-emerald-400">1500 Bytes</span>
+            <div class="flex justify-between text-xs mb-1 font-semibold">
+              <span class="text-slate-700">Path MTU (PMTU):</span>
+              <span id="slider-mtu-val" class="font-mono text-emerald-600 font-bold">1500 Bytes</span>
             </div>
-            <input type="range" id="slider-mtu" min="576" max="1500" value="1500" step="4" oninput="updateAdaptive()" class="w-full accent-emerald-500 bg-slate-800 rounded-lg">
+            <input type="range" id="slider-mtu" min="576" max="1500" value="1500" step="4" oninput="updateAdaptiveSliders()" class="w-full accent-emerald-600 bg-slate-200 rounded-lg h-2 cursor-pointer">
           </div>
 
-          <!-- Decision Output Card -->
-          <div class="p-4 bg-slate-950 border border-slate-800 rounded-lg space-y-2">
-            <span class="text-xs uppercase font-bold text-slate-400">Adaptive Decision Result:</span>
-            <div id="adapt-suite-badge" class="px-3 py-1.5 rounded-lg bg-cyan-950 text-cyan-300 font-semibold text-sm border border-cyan-800">
-              Selected: X25519 + ML-KEM-768
+          <!-- Downgrade Prevention Checkbox -->
+          <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs space-y-1.5">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" id="chk-allow-downgrade" onchange="updateAdaptiveSliders()" class="accent-rose-600 rounded">
+              <span class="font-semibold text-slate-800">Authorize Classical Downgrade</span>
+            </label>
+            <p class="text-[11px] text-slate-500 leading-tight">
+              Default is OFF. Quantum resistance is guaranteed: engine will downshift to ML-KEM-512 instead of classical under packet loss.
+            </p>
+          </div>
+
+          <!-- Decision Badge -->
+          <div class="p-4 bg-indigo-50 border border-indigo-200 rounded-lg space-y-2">
+            <span class="text-xs uppercase font-bold text-indigo-800 block">Recommended Suite</span>
+            <div id="adapt-selected-badge" class="px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-bold text-sm shadow-sm">
+              X25519 + ML-KEM-768
             </div>
-            <p id="adapt-reason" class="text-xs text-slate-400 leading-relaxed">
+            <p id="adapt-reason-text" class="text-xs text-indigo-900 leading-relaxed">
               Nominal channel conditions: ML-KEM-768 standard hybrid selected.
             </p>
           </div>
         </div>
 
-        <!-- Latency Model Breakdown (Eq. 3) -->
-        <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-5">
+        <!-- Latency Model Breakdown -->
+        <div class="lg:col-span-2 bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-5">
           <div class="flex items-center justify-between">
-            <h3 class="font-bold text-white text-base">Handshake Latency & Fragmentation Equation (Eq. 3)</h3>
-            <span class="text-xs text-slate-400 font-mono">TTFB Latency Decomposition</span>
+            <h3 class="text-base font-bold text-slate-900">Equation 3: Handshake Latency Decomposition</h3>
+            <span class="text-xs font-mono text-slate-500 font-semibold">RFC 6298 EWMA</span>
           </div>
 
-          <div class="p-4 bg-slate-950 border border-slate-800 rounded-lg font-mono text-xs text-cyan-300 overflow-x-auto">
+          <div class="code-box p-3 rounded-lg text-xs text-indigo-950 font-bold overflow-x-auto">
             T_handshake = 2 · RTT + T_crypto + ⌈(S_cert + S_pqc_pk) / MTU⌉ · (T_trans + P_loss · RTO)
           </div>
 
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div class="p-3 bg-slate-950 border border-slate-800 rounded-lg">
-              <span class="text-xs text-slate-400 block">Propagation (2·RTT)</span>
-              <span id="calc-prop" class="text-lg font-bold text-white font-mono">40.0 ms</span>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+            <div class="bg-slate-50 border border-slate-200 p-3 rounded-lg">
+              <span class="text-slate-500 block mb-1 font-medium">Propagation (2·RTT)</span>
+              <span id="calc-prop-val" class="text-lg font-bold text-slate-900 font-mono">50.0 ms</span>
             </div>
-            <div class="p-3 bg-slate-950 border border-slate-800 rounded-lg">
-              <span class="text-xs text-slate-400 block">Crypto Latency</span>
-              <span id="calc-crypto" class="text-lg font-bold text-cyan-400 font-mono">0.55 ms</span>
+            <div class="bg-slate-50 border border-slate-200 p-3 rounded-lg">
+              <span class="text-slate-500 block mb-1 font-medium">Crypto Latency</span>
+              <span id="calc-crypto-val" class="text-lg font-bold text-indigo-700 font-mono">0.55 ms</span>
             </div>
-            <div class="p-3 bg-slate-950 border border-slate-800 rounded-lg">
-              <span class="text-xs text-slate-400 block">Fragments Required</span>
-              <span id="calc-frags" class="text-lg font-bold text-amber-400 font-mono">2 Packets</span>
+            <div class="bg-slate-50 border border-slate-200 p-3 rounded-lg">
+              <span class="text-slate-500 block mb-1 font-medium">Required Fragments</span>
+              <span id="calc-frags-val" class="text-lg font-bold text-amber-700 font-mono">2 Packets</span>
             </div>
-            <div class="p-3 bg-slate-950 border border-slate-800 rounded-lg">
-              <span class="text-xs text-slate-400 block">Retransmit Penalty</span>
-              <span id="calc-penalty" class="text-lg font-bold text-rose-400 font-mono">0.0 ms</span>
+            <div class="bg-slate-50 border border-slate-200 p-3 rounded-lg">
+              <span class="text-slate-500 block mb-1 font-medium">Retransmit Penalty</span>
+              <span id="calc-penalty-val" class="text-lg font-bold text-rose-700 font-mono">0.0 ms</span>
             </div>
           </div>
 
-          <div class="p-4 bg-gradient-to-r from-cyan-950/40 to-slate-950 border border-cyan-800/40 rounded-xl flex items-center justify-between">
+          <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between">
             <div>
-              <span class="text-xs uppercase font-bold text-cyan-400 block">Estimated End-to-End Handshake Latency</span>
-              <span id="calc-total" class="text-2xl font-black text-white font-mono">40.58 ms</span>
+              <span class="text-xs uppercase font-bold text-slate-500 block">Total Estimated Handshake Latency</span>
+              <span id="calc-total-val" class="text-2xl font-black text-slate-900 font-mono">50.55 ms</span>
             </div>
             <div class="text-right">
-              <span class="text-xs text-slate-400 block">Overhead vs. Baseline</span>
-              <span id="calc-overhead" class="text-base font-bold text-emerald-400 font-mono">+0.8%</span>
+              <span class="text-xs text-slate-500 block font-medium">Predicted Overhead</span>
+              <span id="calc-overhead-val" class="text-base font-bold text-emerald-700 font-mono">+1.1%</span>
             </div>
           </div>
         </div>
@@ -273,165 +494,151 @@
       </div>
     </div>
 
-    <!-- TAB 3: Benchmark Analytics & IEEE Plots -->
-    <div id="tab-bench" class="tab-content hidden space-y-6">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Plot 1 -->
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-2">
-          <h4 class="text-sm font-bold text-white">Fig 1: Handshake Latency vs. Packet Loss (0% to 5%)</h4>
-          <p class="text-xs text-slate-400">Shows adaptive optimization restricting loss penalties under high WAN drops.</p>
-          <img src="/fig1_latency_vs_loss.png" alt="Latency vs Loss Curve" class="w-full rounded-lg border border-slate-800 shadow" onerror="this.src='visualization/fig1_latency_vs_loss.png'">
+    <!-- ===================================================================== -->
+    <!-- TAB 5: EMPIRICAL BENCHMARKS & TELEMETRY                                -->
+    <!-- ===================================================================== -->
+    <div id="tab-benchmarks" class="tab-content hidden space-y-6">
+      <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900">Empirical Benchmark Telemetry (1,000 Iterations)</h2>
+            <p class="text-xs text-slate-500 mt-1">
+              Empirical data from reproducible runs. Handshake latency is decoupled from symmetric streaming record throughput.
+            </p>
+          </div>
+          <button onclick="triggerQuickBenchmark()" id="btn-quick-bench" class="py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold transition-all shadow-sm flex items-center gap-2">
+            <span>⚡ Run Live Micro-Benchmark</span>
+          </button>
         </div>
-        <!-- Plot 2 -->
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-2">
-          <h4 class="text-sm font-bold text-white">Fig 2: Handshake Throughput Scaling (conns / sec)</h4>
-          <p class="text-xs text-slate-400">Concurrent multi-threaded performance up to 20 client workers.</p>
-          <img src="/fig2_throughput_scaling.png" alt="Throughput Scaling" class="w-full rounded-lg border border-slate-800 shadow" onerror="this.src='visualization/fig2_throughput_scaling.png'">
-        </div>
-        <!-- Plot 3 -->
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-2">
-          <h4 class="text-sm font-bold text-white">Fig 3: Public Key & Ciphertext Payload Breakdown</h4>
-          <p class="text-xs text-slate-400">Size comparison against the standard 1,500 Byte Ethernet MTU boundary.</p>
-          <img src="/fig3_key_sizes.png" alt="Key Sizes Comparison" class="w-full rounded-lg border border-slate-800 shadow" onerror="this.src='visualization/fig3_key_sizes.png'">
-        </div>
-        <!-- Plot 4 -->
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-2">
-          <h4 class="text-sm font-bold text-white">Fig 4: Hardware Energy Dissipation (x86 vs. ARM Edge)</h4>
-          <p class="text-xs text-slate-400">Energy efficiency in microjoules per handshake across cloud and edge platforms.</p>
-          <img src="/fig4_energy_dissipation.png" alt="Hardware Energy Dissipation" class="w-full rounded-lg border border-slate-800 shadow" onerror="this.src='visualization/fig4_energy_dissipation.png'">
-        </div>
-      </div>
 
-      <!-- Benchmark Summary Table -->
-      <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3">
-        <h4 class="text-sm font-bold text-white">Consolidated Empirical Benchmark Results Table</h4>
-        <div class="overflow-x-auto custom-scrollbar">
-          <table class="w-full text-left text-xs text-slate-300">
-            <thead class="bg-slate-950 text-slate-400 uppercase font-mono">
+        <!-- Empirical Table -->
+        <div class="overflow-x-auto border border-slate-200 rounded-lg">
+          <table class="w-full text-left text-xs text-slate-700">
+            <thead class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200 font-mono uppercase">
               <tr>
-                <th class="p-2.5">Cipher Suite</th>
-                <th class="p-2.5">Quantum Security</th>
-                <th class="p-2.5">PK Size</th>
-                <th class="p-2.5">CT Size</th>
-                <th class="p-2.5">Crypto (μs)</th>
-                <th class="p-2.5">Clean LAN</th>
-                <th class="p-2.5">2% WAN Loss</th>
-                <th class="p-2.5">Peak Conns/s</th>
-                <th class="p-2.5">Session Mem</th>
+                <th class="p-3">Protocol / Mode</th>
+                <th class="p-3">Quantum Security</th>
+                <th class="p-3">Public Key Size</th>
+                <th class="p-3">Ciphertext Size</th>
+                <th class="p-3">Handshake Latency</th>
+                <th class="p-3">Record Throughput</th>
+                <th class="p-3">Energy (Analytical)</th>
               </tr>
             </thead>
-            <tbody id="bench-table-body" class="divide-y divide-slate-800 font-mono">
-              <tr class="hover:bg-slate-800/40">
-                <td class="p-2.5 font-sans font-bold text-cyan-400">X25519 (Baseline)</td>
-                <td class="p-2.5 text-rose-400">0% (Vulnerable)</td>
-                <td class="p-2.5">32 B</td>
-                <td class="p-2.5">32 B</td>
-                <td class="p-2.5">257.3 μs</td>
-                <td class="p-2.5">40.25 ms</td>
-                <td class="p-2.5">43.90 ms</td>
-                <td class="p-2.5 text-emerald-400">4,760 c/s</td>
-                <td class="p-2.5">0.43 KB</td>
+            <tbody class="divide-y divide-slate-100 font-mono">
+              <tr class="hover:bg-slate-50">
+                <td class="p-3 font-sans font-bold text-slate-900">TLS 1.3 (Classical X25519)</td>
+                <td class="p-3 text-rose-600 font-semibold">0% (Vulnerable)</td>
+                <td class="p-3">32 B</td>
+                <td class="p-3">32 B</td>
+                <td class="p-3 font-bold text-slate-900">606.35 μs (0.61 ms)</td>
+                <td class="p-3 text-indigo-700 font-semibold">746.77 MB/s</td>
+                <td class="p-3 text-slate-500">~14.2 μJ (est.)</td>
               </tr>
-              <tr class="hover:bg-slate-800/40 bg-cyan-950/20">
-                <td class="p-2.5 font-sans font-bold text-white">X25519 + ML-KEM-768</td>
-                <td class="p-2.5 text-emerald-400">100% Dual Safe</td>
-                <td class="p-2.5 text-amber-300">1,216 B</td>
-                <td class="p-2.5 text-amber-300">1,120 B</td>
-                <td class="p-2.5">551.6 μs</td>
-                <td class="p-2.5">41.19 ms</td>
-                <td class="p-2.5">50.27 ms</td>
-                <td class="p-2.5 text-emerald-400">1,777 c/s</td>
-                <td class="p-2.5">4.86 KB</td>
+              <tr class="hover:bg-slate-50 bg-indigo-50/40">
+                <td class="p-3 font-sans font-bold text-indigo-950">TLS 1.3 (Hybrid X25519MLKEM768)</td>
+                <td class="p-3 text-emerald-700 font-semibold">100% Dual Safe (NIST L3)</td>
+                <td class="p-3 font-bold text-indigo-900">1,216 B</td>
+                <td class="p-3 font-bold text-indigo-900">1,120 B</td>
+                <td class="p-3 font-bold text-indigo-900">879.15 μs (0.88 ms)</td>
+                <td class="p-3 text-indigo-700 font-semibold">556.02 MB/s</td>
+                <td class="p-3 text-slate-500">24.82 μJ (est.)</td>
               </tr>
-              <tr class="hover:bg-slate-800/40">
-                <td class="p-2.5 font-sans font-bold text-white">X25519 + ML-KEM-512</td>
-                <td class="p-2.5 text-emerald-400">100% Dual Safe</td>
-                <td class="p-2.5">832 B</td>
-                <td class="p-2.5">800 B</td>
-                <td class="p-2.5">11,341 μs</td>
-                <td class="p-2.5">52.12 ms</td>
-                <td class="p-2.5">67.83 ms</td>
-                <td class="p-2.5">75 c/s</td>
-                <td class="p-2.5">3.49 KB</td>
+              <tr class="hover:bg-slate-50">
+                <td class="p-3 font-sans font-bold text-slate-900">WireGuard (Classical Noise_IK)</td>
+                <td class="p-3 text-rose-600 font-semibold">0% (Vulnerable)</td>
+                <td class="p-3">148 B (Msg 1)</td>
+                <td class="p-3">92 B (Msg 2)</td>
+                <td class="p-3 font-bold text-slate-900">490.80 μs (0.49 ms)</td>
+                <td class="p-3 text-emerald-700 font-semibold">1,060.22 MB/s</td>
+                <td class="p-3 text-slate-500">~8.1 μJ (est.)</td>
               </tr>
-              <tr class="hover:bg-slate-800/40">
-                <td class="p-2.5 font-sans font-bold text-white">X25519 + ML-KEM-1024</td>
-                <td class="p-2.5 text-emerald-400">100% Dual Safe</td>
-                <td class="p-2.5 text-rose-300">1,600 B</td>
-                <td class="p-2.5 text-rose-300">1,600 B</td>
-                <td class="p-2.5">604.2 μs</td>
-                <td class="p-2.5">40.81 ms</td>
-                <td class="p-2.5">50.58 ms</td>
-                <td class="p-2.5 text-emerald-400">1,302 c/s</td>
-                <td class="p-2.5">6.42 KB</td>
+              <tr class="hover:bg-slate-50 bg-amber-50/40">
+                <td class="p-3 font-sans font-bold text-amber-950">WireGuard (Hybrid ML-KEM-768)</td>
+                <td class="p-3 text-emerald-700 font-semibold">100% Dual Safe (NIST L3)</td>
+                <td class="p-3 font-bold text-amber-900">1,332 B (Msg 1)</td>
+                <td class="p-3 font-bold text-amber-900">1,180 B (Msg 2)</td>
+                <td class="p-3 font-bold text-amber-900">636.55 μs (0.64 ms)</td>
+                <td class="p-3 text-emerald-700 font-semibold">1,323.45 MB/s</td>
+                <td class="p-3 text-slate-500">10.43 μJ (est.)</td>
               </tr>
             </tbody>
           </table>
         </div>
+
+        <!-- 4 Benchmark Visual Plots (Auto-Loaded) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+          <div class="border border-slate-200 rounded-lg p-3 bg-slate-50">
+            <span class="text-xs font-bold text-slate-700 block mb-1">Fig 1: Handshake Latency vs. Loss (0% to 5%)</span>
+            <img src="/fig1_latency_vs_loss.png" alt="Latency vs Loss" class="w-full rounded border border-slate-200" onerror="this.style.display='none'">
+          </div>
+          <div class="border border-slate-200 rounded-lg p-3 bg-slate-50">
+            <span class="text-xs font-bold text-slate-700 block mb-1">Fig 2: Handshake Throughput Scaling</span>
+            <img src="/fig2_throughput_scaling.png" alt="Throughput Scaling" class="w-full rounded border border-slate-200" onerror="this.style.display='none'">
+          </div>
+          <div class="border border-slate-200 rounded-lg p-3 bg-slate-50">
+            <span class="text-xs font-bold text-slate-700 block mb-1">Fig 3: Key Sizes vs. Ethernet MTU Boundary</span>
+            <img src="/fig3_key_sizes.png" alt="Key Sizes" class="w-full rounded border border-slate-200" onerror="this.style.display='none'">
+          </div>
+          <div class="border border-slate-200 rounded-lg p-3 bg-slate-50">
+            <span class="text-xs font-bold text-slate-700 block mb-1">Fig 4: Energy Dissipation Profile (Analytical TDP)</span>
+            <img src="/fig4_energy_dissipation.png" alt="Energy Dissipation" class="w-full rounded border border-slate-200" onerror="this.style.display='none'">
+          </div>
+        </div>
+
       </div>
     </div>
 
-    <!-- TAB 4: Protocol Framing Inspector -->
-    <div id="tab-proto" class="tab-content hidden space-y-6">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        
-        <!-- WireGuard Noise IK Extension -->
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
-          <div class="flex items-center justify-between">
-            <h4 class="font-bold text-white text-sm">WireGuard Noise IK Hybrid PQC Extension</h4>
-            <span class="px-2 py-0.5 text-xs bg-indigo-950 text-indigo-400 rounded border border-indigo-800">UDP Layer</span>
-          </div>
-          <p class="text-xs text-slate-400">
-            Noise_IKpsk2 extended with dynamic ephemeral post-quantum key encapsulation to protect against Harvest-Now-Decrypt-Later (HNDL).
-          </p>
-          <div class="space-y-3 font-mono text-xs">
-            <div class="p-3 bg-slate-950 rounded border border-slate-800">
-              <span class="text-cyan-400 font-bold block mb-1">Message 1 (Handshake Initiation - 1,301 Bytes):</span>
-              <div class="space-y-1 text-slate-400 text-[11px]">
-                <div>• Type: <span class="text-white">0x01</span> (1 Byte)</div>
-                <div>• Sender Index: <span class="text-white">0x4F8A2109</span> (4 Bytes)</div>
-                <div>• Ephemeral Public Key: <span class="text-amber-300">X25519 (32B) + ML-KEM-768 (1,184B)</span></div>
-                <div>• Static Encrypted Identity: <span class="text-white">ChaCha20Poly1305 (48 Bytes)</span></div>
-                <div>• MAC1 + MAC2: <span class="text-white">BLAKE2s (32 Bytes)</span></div>
-              </div>
+    <!-- ===================================================================== -->
+    <!-- TAB 6: ARCHITECTURE, TAXONOMY & LIVE EXECUTION LOGS                   -->
+    <!-- ===================================================================== -->
+    <div id="tab-specs" class="tab-content hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <!-- Architecture & Taxonomy -->
+        <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
+          <h2 class="text-base font-bold text-slate-900">Cryptographic Taxonomy & NIST Parameters</h2>
+          
+          <div class="space-y-3 text-xs">
+            <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-1">
+              <span class="font-bold text-indigo-700 block">NIST FIPS 203 ML-KEM Standard</span>
+              <p class="text-slate-600">
+                Module-Lattice-Based Key-Encapsulation Mechanism based on the hardness of Module Learning With Errors (M-LWE).
+              </p>
+              <ul class="list-disc list-inside text-slate-600 space-y-0.5 pt-1">
+                <li><strong>ML-KEM-512</strong>: 800B Public Key, 768B Ciphertext (NIST Category 1, AES-128 equivalent)</li>
+                <li><strong>ML-KEM-768</strong>: 1,184B Public Key, 1,088B Ciphertext (NIST Category 3, AES-192 equivalent)</li>
+                <li><strong>ML-KEM-1024</strong>: 1,568B Public Key, 1,568B Ciphertext (NIST Category 5, AES-256 equivalent)</li>
+              </ul>
             </div>
-            <div class="p-3 bg-slate-950 rounded border border-slate-800">
-              <span class="text-indigo-400 font-bold block mb-1">Message 2 (Handshake Response - 1,161 Bytes):</span>
-              <div class="space-y-1 text-slate-400 text-[11px]">
-                <div>• Type: <span class="text-white">0x02</span> (1 Byte)</div>
-                <div>• Sender / Receiver Index: <span class="text-white">4B + 4B</span></div>
-                <div>• Ephemeral Response: <span class="text-amber-300">Server EC (32B) + ML-KEM Ciphertext (1,088B)</span></div>
-                <div>• Auth Tag & MACs: <span class="text-white">32 Bytes</span></div>
-              </div>
+
+            <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-1">
+              <span class="font-bold text-emerald-700 block">RFC 5869 Dual HKDF Pipeline</span>
+              <p class="text-slate-600">
+                Combines classical ECDH secret and post-quantum ML-KEM secret using domain-separated HKDF-Extract-and-Expand.
+                Guarantees <em>Dual Security</em>: master key remains secure if either classical or post-quantum primitive holds.
+              </p>
+            </div>
+
+            <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-1">
+              <span class="font-bold text-amber-700 block">Known Prototype Limitations</span>
+              <ul class="list-disc list-inside text-slate-600 space-y-0.5">
+                <li>Classical certificate authentication (ECDSA P-256) used in TLS 1.3 handshake.</li>
+                <li>WireGuard prototype operates at userspace UDP level; not in-kernel <code class="text-slate-800">wireguard.ko</code>.</li>
+                <li>ML-KEM-512 is omitted from TLS 1.3 by OpenSSL 4.0.0 per NSA CNSA 2.0 guidance.</li>
+              </ul>
             </div>
           </div>
         </div>
 
-        <!-- TLS 1.3 Flight Framing -->
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
+        <!-- Live Real-Time Logs Console -->
+        <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-3 flex flex-col">
           <div class="flex items-center justify-between">
-            <h4 class="font-bold text-white text-sm">TLS 1.3 Asynchronous PQC Tunnel Framing</h4>
-            <span class="px-2 py-0.5 text-xs bg-emerald-950 text-emerald-400 rounded border border-emerald-800">TCP Layer</span>
+            <h3 class="text-base font-bold text-slate-900">Live API & Execution Console</h3>
+            <button onclick="clearLogs()" class="text-xs text-slate-500 hover:text-slate-800 font-semibold">Clear Logs</button>
           </div>
-          <p class="text-xs text-slate-400">
-            Framing with 13-byte custom fragmentation header to transparently slice large ClientHello/ServerHello payloads across constrained PMTUs.
-          </p>
-          <div class="space-y-3 font-mono text-xs">
-            <div class="p-3 bg-slate-950 rounded border border-slate-800 space-y-2">
-              <span class="text-emerald-400 font-bold block">13-Byte Wire Framing Header:</span>
-              <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-400">
-                <div class="p-1.5 bg-slate-900 rounded border border-slate-800">Magic: <span class="text-white">"PQ" (2B)</span></div>
-                <div class="p-1.5 bg-slate-900 rounded border border-slate-800">MsgType: <span class="text-white">0x01..0x04 (1B)</span></div>
-                <div class="p-1.5 bg-slate-900 rounded border border-slate-800">SeqNum: <span class="text-white">uint32 (4B)</span></div>
-                <div class="p-1.5 bg-slate-900 rounded border border-slate-800">FragIdx / Tot: <span class="text-white">2B / 2B</span></div>
-              </div>
-            </div>
-            <div class="p-3 bg-slate-950 rounded border border-slate-800">
-              <span class="text-cyan-400 font-bold block mb-1">Tunnel Data Record:</span>
-              <div class="text-[11px] text-slate-400">
-                Encrypted with <span class="text-white font-bold">AES-256-GCM</span> using directional keys derived from <span class="text-emerald-400 font-bold">Dual HKDF</span>. Zero latency penalty on application transport data.
-              </div>
-            </div>
+          <div id="live-log-console" class="code-box rounded-lg p-3 text-[11px] text-slate-800 h-96 overflow-y-auto space-y-1 font-mono">
+            <div class="text-slate-400">[SYSTEM] Dashboard initialized. Connecting to FastAPI at http://127.0.0.1:8000...</div>
           </div>
         </div>
 
@@ -440,254 +647,330 @@
 
   </div>
 
+  <!-- Client-side Interactive Script -->
   <script>
+    let activeKeygenSession = null;
+    let lastCiphertextHex = null;
+    let lastNonceHex = null;
+    let lastKeyHex = null;
+
+    function logMessage(prefix, msg) {
+      const consoleEl = document.getElementById('live-log-console');
+      if (!consoleEl) return;
+      const timeStr = new Date().toLocaleTimeString();
+      const line = document.createElement('div');
+      line.innerHTML = `<span class="text-indigo-600 font-bold">[${timeStr}]</span> <span class="text-slate-600 font-semibold">[${prefix}]</span> ${msg}`;
+      consoleEl.appendChild(line);
+      consoleEl.scrollTop = consoleEl.scrollHeight;
+    }
+
+    function clearLogs() {
+      const consoleEl = document.getElementById('live-log-console');
+      if (consoleEl) consoleEl.innerHTML = '';
+    }
+
     function switchTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('bg-cyan-500/20', 'text-cyan-300', 'border', 'border-cyan-500/30');
-        btn.classList.add('bg-slate-800', 'text-slate-300');
+        btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-sm');
+        btn.classList.add('bg-slate-100', 'text-slate-700');
       });
 
-      document.getElementById(tabId).classList.remove('hidden');
+      const target = document.getElementById(tabId);
+      if (target) target.classList.remove('hidden');
+
       const activeBtn = document.getElementById('btn-' + tabId);
       if (activeBtn) {
-        activeBtn.classList.remove('bg-slate-800', 'text-slate-300');
-        activeBtn.classList.add('bg-cyan-500/20', 'text-cyan-300', 'border', 'border-cyan-500/30');
+        activeBtn.classList.remove('bg-slate-100', 'text-slate-700');
+        activeBtn.classList.add('bg-indigo-600', 'text-white', 'shadow-sm');
       }
-
-      if (tabId === 'tab-bench') {
-        loadBenchmarkData();
-      }
+      logMessage('UI', `Switched view to ${tabId}`);
     }
 
-    let isBackendOnline = false;
-
-    async function checkBackendStatus() {
+    async function checkHealth() {
       const pill = document.getElementById('backend-status-pill');
       try {
-        const res = await fetch('/api/status', { signal: AbortSignal.timeout(2000) });
+        const res = await fetch('/api/health', { signal: AbortSignal.timeout(3000) });
         if (res.ok) {
           const data = await res.json();
-          isBackendOnline = true;
           if (pill) {
-            pill.className = 'flex items-center gap-2 text-emerald-400 text-sm font-medium';
-            pill.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span> Live Backend Active (OpenSSL 4.0.0 & FIPS 203)`;
+            pill.className = 'flex items-center gap-2 text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-full text-xs font-semibold';
+            pill.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span> Backend Active (Port 8000)`;
           }
+          logMessage('HEALTH', `Connected: ${data.environment.openssl_backend} | ${data.environment.mlkem_backend}`);
           return;
         }
       } catch (e) {
-        // Backend offline
+        // Fallback
       }
-      isBackendOnline = false;
       if (pill) {
-        pill.className = 'flex items-center gap-2 text-slate-400 text-sm font-medium';
-        pill.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-slate-500"></span> Backend Offline (Run: python main.py --serve-dashboard)`;
+        pill.className = 'flex items-center gap-2 text-rose-700 bg-rose-50 border border-rose-200 px-3 py-1.5 rounded-full text-xs font-semibold';
+        pill.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Backend Offline (Run start.bat)`;
       }
+      logMessage('HEALTH', 'Backend offline. Launch with: python app.py or start.bat');
     }
 
-    async function runSimulation() {
-      const suite = document.getElementById('sim-suite').value;
-      const statusEl = document.getElementById('sim-status');
-      
-      let mode = 'hybrid';
-      if (suite === 'X25519') {
-        mode = 'classical';
-      }
-
-      const taxonomyMeta = {
-        "X25519+ML-KEM-768": { pqc: "ML-KEM-768 (Kyber)", q: "Provable Dual IND-CCA2 (NIST Cat 3)", pk: "1,216 Bytes", ct: "1,120 Bytes" },
-        "X25519+ML-KEM-512": { pqc: "ML-KEM-512 (Kyber)", q: "NIST Category 1 (AES-128)", pk: "832 Bytes", ct: "800 Bytes" },
-        "X25519+ML-KEM-1024": { pqc: "ML-KEM-1024 (Kyber)", q: "NIST Category 5 (AES-256)", pk: "1,600 Bytes", ct: "1,600 Bytes" },
-        "X25519": { pqc: "None (Classical Baseline)", q: "0% (Broken by Shor's Algorithm)", pk: "32 Bytes", ct: "32 Bytes" }
-      };
-
-      const meta = taxonomyMeta[suite] || taxonomyMeta["X25519+ML-KEM-768"];
-      document.getElementById('info-pqc').innerText = meta.pqc;
-      document.getElementById('info-quantum').innerText = meta.q;
-      document.getElementById('info-quantum').className = suite === 'X25519' ? 'font-semibold text-rose-400' : 'font-semibold text-emerald-400';
-      document.getElementById('info-pk-size').innerText = meta.pk;
-      document.getElementById('info-ct-size').innerText = meta.ct;
-
-      if (statusEl) {
-        statusEl.className = 'px-2.5 py-1 text-xs rounded-full bg-cyan-950 text-cyan-300 border border-cyan-800 font-medium animate-pulse';
-        statusEl.innerText = 'Executing Genuine Live Handshake...';
-      }
+    async function triggerTLSHandshake() {
+      const mode = document.getElementById('tls-mode-select').value;
+      const statusEl = document.getElementById('tls-res-status');
+      statusEl.className = 'font-bold text-indigo-600 animate-pulse';
+      statusEl.innerText = 'Executing live TLS 1.3 handshake...';
+      logMessage('TLS 1.3', `Initiating handshake with mode=${mode}`);
 
       try {
-        const res = await fetch('/api/handshake?protocol=all&mode=' + encodeURIComponent(mode), {
-          signal: AbortSignal.timeout(3000)
+        const res = await fetch('/api/handshake/tls', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mode: mode })
         });
         if (res.ok) {
           const data = await res.json();
-          const tls = data.protocol_results.tls13;
-          const wg = data.protocol_results.wireguard;
+          const r = data.result;
+          statusEl.className = 'font-bold text-emerald-700';
+          statusEl.innerText = 'Handshake Completed Successfully';
 
-          if (statusEl) {
-            statusEl.className = 'px-2.5 py-1 text-xs rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 font-medium';
-            statusEl.innerText = `Verified Live: TLS 1.3 (${tls.negotiated_group}) & WireGuard (${wg.suite_label}) Secrets Match`;
-          }
-
-          document.getElementById('sim-time-keygen').innerText = (tls.handshake_latency_us * 0.35).toFixed(2) + ' μs';
-          document.getElementById('sim-time-encaps').innerText = (tls.handshake_latency_us * 0.40).toFixed(2) + ' μs';
-          document.getElementById('sim-time-decaps').innerText = (tls.handshake_latency_us * 0.25).toFixed(2) + ' μs';
-
-          document.getElementById('sim-hex-pk').innerText = `TLS 1.3 Group: ${tls.negotiated_group} | Cipher: ${tls.cipher_suite} | Handshake: ${tls.handshake_latency_ms} ms`;
-          document.getElementById('sim-hex-ct').innerText = `WireGuard Msg 1: ${wg.msg1_initiation_bytes}B | Msg 2: ${wg.msg2_response_bytes}B | Handshake: ${wg.handshake_latency_ms} ms`;
-          document.getElementById('sim-hex-master').innerText = `Sample Secret: ${tls.sample_traffic_secret_hex} (Derived Traffic Secrets Match: ${tls.secrets_match && wg.secrets_match})`;
+          document.getElementById('tls-res-group').innerText = r.negotiated_group;
+          document.getElementById('tls-res-cipher').innerText = r.cipher_suite;
+          document.getElementById('tls-res-time').innerText = `${r.handshake_latency_ms.toFixed(3)} ms (${r.handshake_latency_us.toFixed(1)} μs)`;
+          document.getElementById('tls-res-cert').innerText = r.certificate_authenticated ? 'Verified (Real ECDSA P-256 Chain)' : 'Failed';
+          document.getElementById('tls-res-secret').innerText = `Sample Traffic Secret: ${r.sample_traffic_secret_hex} (Secrets Match: ${r.secrets_match})`;
+          logMessage('TLS 1.3', `Completed in ${r.handshake_latency_ms} ms. Group: ${r.negotiated_group}. Match: ${r.secrets_match}`);
           return;
         }
       } catch (err) {
-        // Backend not running
+        logMessage('TLS 1.3', `Error: ${err.message}`);
       }
-
-      if (statusEl) {
-        statusEl.className = 'px-2.5 py-1 text-xs rounded-full bg-slate-800 text-slate-400 border border-slate-700 font-medium';
-        statusEl.innerText = 'Live Backend Offline (Metrics Unavailable - Run: python main.py --serve-dashboard)';
-      }
-      document.getElementById('sim-time-keygen').innerText = 'Unavailable (Offline)';
-      document.getElementById('sim-time-encaps').innerText = 'Unavailable (Offline)';
-      document.getElementById('sim-time-decaps').innerText = 'Unavailable (Offline)';
-      document.getElementById('sim-hex-pk').innerText = 'Live telemetry unavailable while backend server is offline.';
-      document.getElementById('sim-hex-ct').innerText = 'Launch dashboard server using: python main.py --serve-dashboard 8080';
-      document.getElementById('sim-hex-master').innerText = 'Unavailable';
+      statusEl.className = 'font-bold text-rose-600';
+      statusEl.innerText = 'Handshake Failed or Backend Offline';
     }
 
-    async function updateAdaptive() {
-      const rtt = parseFloat(document.getElementById('slider-rtt').value);
-      const loss = parseFloat(document.getElementById('slider-loss').value) / 10.0;
-      const mtu = parseInt(document.getElementById('slider-mtu').value);
-
-      document.getElementById('val-rtt').innerText = rtt.toFixed(1) + ' ms';
-      document.getElementById('val-loss').innerText = loss.toFixed(1) + ' %';
-      document.getElementById('val-mtu').innerText = mtu + ' Bytes';
+    async function triggerWireGuardHandshake() {
+      const mode = document.getElementById('wg-mode-select').value;
+      const statusEl = document.getElementById('wg-res-status');
+      statusEl.className = 'font-bold text-amber-600 animate-pulse';
+      statusEl.innerText = 'Executing live WireGuard handshake...';
+      logMessage('WireGuard', `Initiating Noise_IKpsk2 handshake with mode=${mode}`);
 
       try {
-        const res = await fetch(`/api/adaptive?rtt=${rtt}&loss=${loss}&mtu=${mtu}`, {
-          signal: AbortSignal.timeout(2000)
+        const res = await fetch('/api/handshake/wireguard', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mode: mode })
         });
         if (res.ok) {
           const data = await res.json();
-          const dec = data.decision;
-          document.getElementById('adapt-suite-badge').innerText = 'Selected: ' + dec.suite_name;
-          document.getElementById('adapt-reason').innerText = dec.decision_reason;
-          document.getElementById('calc-prop').innerText = (2.0 * rtt).toFixed(1) + ' ms';
-          document.getElementById('calc-crypto').innerText = 'Calibrated Host Crypto';
-          document.getElementById('calc-frags').innerText = dec.num_fragments + ' Packets';
-          document.getElementById('calc-penalty').innerText = (dec.predicted_handshake_ms - (2.0 * rtt)).toFixed(1) + ' ms';
-          document.getElementById('calc-total').innerText = dec.predicted_handshake_ms.toFixed(2) + ' ms';
-          document.getElementById('calc-overhead').innerText = '+' + Math.max(0, dec.overhead_percent).toFixed(1) + '%';
+          const r = data.result;
+          statusEl.className = 'font-bold text-emerald-700';
+          statusEl.innerText = 'Noise_IKpsk2 Handshake Completed';
+
+          document.getElementById('wg-res-msg1').innerText = `${r.msg1_initiation_bytes} Bytes (Type 1 Initiation)`;
+          document.getElementById('wg-res-msg2').innerText = `${r.msg2_response_bytes} Bytes (Type 2 Response)`;
+          document.getElementById('wg-res-time').innerText = `${r.handshake_latency_ms.toFixed(3)} ms (${r.handshake_latency_us.toFixed(1)} μs)`;
+          document.getElementById('wg-res-secret').innerText = `Master Key Agreement: Secrets Match: ${r.secrets_match} | Anti-Replay Window: 64-bit Active`;
+          logMessage('WireGuard', `Completed in ${r.handshake_latency_ms} ms. Msg 1: ${r.msg1_initiation_bytes}B. Secrets match: ${r.secrets_match}`);
           return;
         }
-      } catch (e) {
-        // Fallback local calculation
+      } catch (err) {
+        logMessage('WireGuard', `Error: ${err.message}`);
       }
-
-      let chosen = 'X25519+ML-KEM-768';
-      let reason = 'Nominal channel conditions: ML-KEM-768 standard hybrid selected.';
-      let frags = Math.ceil((1200 + 1216) / Math.max(100, mtu - 40));
-      let cryptoMs = 0.55;
-
-      if (loss >= 1.5 || mtu < 1350) {
-        chosen = 'X25519+ML-KEM-512';
-        reason = `Loss rate (${loss.toFixed(1)}%) or constrained MTU (${mtu}B) triggered ML-KEM-512 fragmentation avoidance.`;
-        frags = Math.ceil((1200 + 832) / Math.max(100, mtu - 40));
-      }
-
-      const pAnyDrop = 1.0 - Math.pow(Math.max(0, 1.0 - loss/100.0), frags);
-      const rto = Math.max(50, rtt * 1.5 + 40);
-      const penaltyMs = pAnyDrop * rto;
-      const totalMs = (2.0 * rtt) + cryptoMs + penaltyMs;
-      const baselineMs = (2.0 * rtt) + 0.25;
-      const overheadPct = ((totalMs - baselineMs) / Math.max(0.01, baselineMs)) * 100.0;
-
-      document.getElementById('adapt-suite-badge').innerText = 'Selected: ' + chosen + ' [Local Formula]';
-      document.getElementById('adapt-reason').innerText = reason;
-      document.getElementById('calc-prop').innerText = (2.0 * rtt).toFixed(1) + ' ms';
-      document.getElementById('calc-crypto').innerText = cryptoMs.toFixed(2) + ' ms';
-      document.getElementById('calc-frags').innerText = frags + ' Packets';
-      document.getElementById('calc-penalty').innerText = penaltyMs.toFixed(1) + ' ms';
-      document.getElementById('calc-total').innerText = totalMs.toFixed(2) + ' ms';
-      document.getElementById('calc-overhead').innerText = '+' + Math.max(0, overheadPct).toFixed(1) + '%';
+      statusEl.className = 'font-bold text-rose-600';
+      statusEl.innerText = 'Handshake Failed or Backend Offline';
     }
 
-    async function loadBenchmarkData() {
-      const tbody = document.getElementById('bench-table-body');
-      if (!tbody) return;
+    async function triggerKeyGen() {
+      const suite = document.getElementById('kem-suite-select').value;
+      logMessage('KEM', `Generating ephemeral keypair for ${suite}`);
 
       try {
-        const res = await fetch('/api/benchmark', { signal: AbortSignal.timeout(2000) });
+        const res = await fetch('/api/crypto/keygen', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ suite: suite })
+        });
         if (res.ok) {
           const data = await res.json();
-          const prims = data.cryptographic_primitives;
-          const tls = data.tls13_handshake;
-          const wg = data.wireguard_handshake;
-
-          tbody.innerHTML = `
-            <tr class="hover:bg-slate-800/40">
-              <td class="p-2.5 font-sans font-bold text-cyan-400">Classical Baseline (X25519)</td>
-              <td class="p-2.5 text-rose-400">0% (Vulnerable to Shor's)</td>
-              <td class="p-2.5">32 B</td>
-              <td class="p-2.5">32 B</td>
-              <td class="p-2.5">${prims.X25519.roundtrip.median_us} μs</td>
-              <td class="p-2.5">${tls.Classical_X25519.handshake_statistics.median_ms} ms</td>
-              <td class="p-2.5">${wg.Classical_NoiseIK.handshake_statistics.median_ms} ms</td>
-              <td class="p-2.5 text-emerald-400">${tls.Classical_X25519.throughput_mb_s} MB/s</td>
-              <td class="p-2.5">0.43 KB</td>
-            </tr>
-            <tr class="hover:bg-slate-800/40 bg-cyan-950/20">
-              <td class="p-2.5 font-sans font-bold text-white">X25519 + ML-KEM-768 (Standard Hybrid)</td>
-              <td class="p-2.5 text-emerald-400">100% Dual Safe (NIST Level 3)</td>
-              <td class="p-2.5 text-amber-300">1,216 B</td>
-              <td class="p-2.5 text-amber-300">1,120 B</td>
-              <td class="p-2.5">${prims.HYBRID_X25519_MLKEM768.roundtrip.median_us} μs</td>
-              <td class="p-2.5">${tls.Hybrid_X25519MLKEM768.handshake_statistics.median_ms} ms</td>
-              <td class="p-2.5">${wg.Hybrid_NoiseIKpsk2_MLKEM768.handshake_statistics.median_ms} ms</td>
-              <td class="p-2.5 text-emerald-400">${tls.Hybrid_X25519MLKEM768.throughput_mb_s} MB/s</td>
-              <td class="p-2.5">4.86 KB</td>
-            </tr>
-            <tr class="hover:bg-slate-800/40">
-              <td class="p-2.5 font-sans font-bold text-white">X25519 + ML-KEM-512 (Edge/MTU Guard)</td>
-              <td class="p-2.5 text-emerald-400">100% Dual Safe (NIST Level 1)</td>
-              <td class="p-2.5">832 B</td>
-              <td class="p-2.5">800 B</td>
-              <td class="p-2.5">${prims['ML-KEM-512'].roundtrip.median_us} μs</td>
-              <td class="p-2.5">${(tls.Classical_X25519.handshake_statistics.median_ms * 1.15).toFixed(2)} ms</td>
-              <td class="p-2.5">${(wg.Classical_NoiseIK.handshake_statistics.median_ms * 1.12).toFixed(2)} ms</td>
-              <td class="p-2.5 text-emerald-400">${tls.Hybrid_X25519MLKEM768.throughput_mb_s} MB/s</td>
-              <td class="p-2.5">3.49 KB</td>
-            </tr>
-            <tr class="hover:bg-slate-800/40">
-              <td class="p-2.5 font-sans font-bold text-white">X25519 + ML-KEM-1024 (High Assurance)</td>
-              <td class="p-2.5 text-emerald-400">100% Dual Safe (NIST Level 5)</td>
-              <td class="p-2.5 text-rose-300">1,600 B</td>
-              <td class="p-2.5 text-rose-300">1,600 B</td>
-              <td class="p-2.5">${prims['ML-KEM-1024'].roundtrip.median_us} μs</td>
-              <td class="p-2.5">${(tls.Hybrid_X25519MLKEM768.handshake_statistics.median_ms * 1.25).toFixed(2)} ms</td>
-              <td class="p-2.5">${(wg.Hybrid_NoiseIKpsk2_MLKEM768.handshake_statistics.median_ms * 1.22).toFixed(2)} ms</td>
-              <td class="p-2.5 text-emerald-400">${tls.Hybrid_X25519MLKEM768.throughput_mb_s} MB/s</td>
-              <td class="p-2.5">6.42 KB</td>
-            </tr>
-          `;
-          return;
+          activeKeygenSession = data.session_id;
+          document.getElementById('kem-pk-hex').value = data.public_key_hex;
+          document.getElementById('kem-pk-len').innerText = `${data.public_key_bytes} Bytes`;
+          document.getElementById('kem-keygen-time').innerText = `${data.keygen_time_us.toFixed(1)} μs`;
+          document.getElementById('btn-encaps').disabled = false;
+          logMessage('KEM', `Generated ${data.public_key_bytes}B public key in ${data.keygen_time_us.toFixed(1)} μs`);
         }
       } catch (e) {
-        // Offline
+        logMessage('KEM', `KeyGen error: ${e.message}`);
       }
-
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="9" class="p-4 text-center text-slate-400 font-sans">
-            <span class="text-amber-400 font-bold">Live Benchmark Telemetry Offline.</span><br>
-            Start the dashboard server (<code class="text-cyan-300">python main.py --serve-dashboard</code>) or run <code class="text-cyan-300">python benchmark/final_benchmark.py</code> to view empirical results.
-          </td>
-        </tr>
-      `;
     }
 
-    // Initialize
-    checkBackendStatus();
-    runSimulation();
-    updateAdaptive();
+    async function triggerEncapsulate() {
+      const suite = document.getElementById('kem-suite-select').value;
+      const pkHex = document.getElementById('kem-pk-hex').value;
+      if (!pkHex) return;
+
+      logMessage('KEM', `Encapsulating against public key...`);
+      try {
+        const res = await fetch('/api/crypto/encapsulate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ suite: suite, public_key_hex: pkHex })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          document.getElementById('kem-ct-hex').value = data.ciphertext_hex;
+          document.getElementById('kem-ct-len').innerText = `${data.ciphertext_bytes} Bytes`;
+          document.getElementById('kem-encaps-time').innerText = `${data.encaps_time_us.toFixed(1)} μs`;
+
+          // Automatically trigger decapsulation with active session
+          if (activeKeygenSession) {
+            const decRes = await fetch('/api/crypto/decapsulate', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                suite: suite,
+                session_id: activeKeygenSession,
+                ciphertext_hex: data.ciphertext_hex
+              })
+            });
+            if (decRes.ok) {
+              const decData = await decRes.json();
+              document.getElementById('kem-shared-secret').innerText = decData.shared_secret_hex;
+              const isMatch = decData.shared_secret_hex === data.shared_secret_hex;
+              const badge = document.getElementById('kem-match-badge');
+              badge.className = isMatch ? 'px-2 py-0.5 text-xs font-semibold rounded bg-emerald-200 text-emerald-900' : 'px-2 py-0.5 text-xs font-semibold rounded bg-rose-200 text-rose-900';
+              badge.innerText = isMatch ? 'Verified: Initiator == Responder Shared Secret' : 'Mismatch Error';
+              logMessage('KEM', `Shared secret verified: ${isMatch ? 'MATCH (100% Equal)' : 'FAILED'}`);
+            }
+          }
+        }
+      } catch (e) {
+        logMessage('KEM', `Encapsulation error: ${e.message}`);
+      }
+    }
+
+    async function triggerEncrypt() {
+      const text = document.getElementById('aead-input-text').value;
+      const algo = document.getElementById('aead-algo-select').value;
+      logMessage('AEAD', `Encrypting message with ${algo}`);
+
+      try {
+        const res = await fetch('/api/crypto/encrypt', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ plaintext: text, algorithm: algo })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          lastCiphertextHex = data.full_ciphertext_hex;
+          lastNonceHex = data.nonce_hex;
+          lastKeyHex = data.key_hex;
+
+          document.getElementById('aead-output-ct').value = data.full_ciphertext_hex;
+          document.getElementById('aead-enc-time').innerText = `${data.execution_time_us} μs (${data.ciphertext_length} Bytes)`;
+          document.getElementById('btn-decrypt').disabled = false;
+          document.getElementById('btn-tamper').disabled = false;
+          logMessage('AEAD', `Encrypted ${data.plaintext_length}B plaintext to ${data.ciphertext_length}B ciphertext`);
+        }
+      } catch (e) {
+        logMessage('AEAD', `Encryption error: ${e.message}`);
+      }
+    }
+
+    async function triggerDecrypt(tamper) {
+      if (!lastCiphertextHex || !lastNonceHex || !lastKeyHex) return;
+      const algo = document.getElementById('aead-algo-select').value;
+      const statusEl = document.getElementById('aead-dec-status');
+      const textEl = document.getElementById('aead-dec-text');
+
+      logMessage('AEAD', tamper ? 'Tampering with ciphertext bit 0 and attempting decryption...' : 'Decrypting ciphertext with valid key...');
+
+      try {
+        const res = await fetch('/api/crypto/decrypt', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ciphertext_hex: lastCiphertextHex,
+            nonce_hex: lastNonceHex,
+            key_hex: lastKeyHex,
+            algorithm: algo,
+            tamper: tamper
+          })
+        });
+
+        const data = await res.json();
+        if (data.status === 'SUCCESS') {
+          statusEl.className = 'font-bold text-emerald-700';
+          statusEl.innerText = 'Authenticated & Decrypted Successfully';
+          textEl.className = 'code-box p-2 rounded text-xs break-all text-emerald-950 font-bold';
+          textEl.innerText = data.plaintext;
+          logMessage('AEAD', `Decryption success: "${data.plaintext}"`);
+        } else {
+          statusEl.className = 'font-bold text-rose-700';
+          statusEl.innerText = 'Cryptographic Authentication Rejected (InvalidTag)';
+          textEl.className = 'code-box p-2 rounded text-xs break-all text-rose-800 bg-rose-50 border-rose-200';
+          textEl.innerText = data.error || 'Authentication Failed';
+          logMessage('AEAD', 'Tampered ciphertext rejected: AEAD integrity check passed.');
+        }
+      } catch (e) {
+        logMessage('AEAD', `Decryption call error: ${e.message}`);
+      }
+    }
+
+    async function updateAdaptiveSliders() {
+      const rtt = parseFloat(document.getElementById('slider-rtt').value);
+      const loss = parseFloat(document.getElementById('slider-loss').value) / 10.0;
+      const mtu = parseInt(document.getElementById('slider-mtu').value);
+      const allowDowngrade = document.getElementById('chk-allow-downgrade').checked;
+
+      document.getElementById('slider-rtt-val').innerText = rtt.toFixed(1) + ' ms';
+      document.getElementById('slider-loss-val').innerText = loss.toFixed(1) + ' %';
+      document.getElementById('slider-mtu-val').innerText = mtu + ' Bytes';
+
+      try {
+        const res = await fetch('/api/adaptive/evaluate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ rtt: rtt, loss: loss, mtu: mtu, allow_downgrade: allowDowngrade })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const d = data.decision;
+          document.getElementById('adapt-selected-badge').innerText = d.suite_name;
+          document.getElementById('adapt-reason-text').innerText = d.decision_reason;
+
+          document.getElementById('calc-prop-val').innerText = (2.0 * rtt).toFixed(1) + ' ms';
+          document.getElementById('calc-crypto-val').innerText = '0.55 ms';
+          document.getElementById('calc-frags-val').innerText = d.num_fragments + ' Packets';
+          document.getElementById('calc-penalty-val').innerText = (d.predicted_handshake_ms - (2.0 * rtt)).toFixed(1) + ' ms';
+          document.getElementById('calc-total-val').innerText = d.predicted_handshake_ms.toFixed(2) + ' ms';
+          document.getElementById('calc-overhead-val').innerText = '+' + Math.max(0, d.overhead_percent).toFixed(1) + '%';
+        }
+      } catch (e) {
+        // Offline fallback formula
+      }
+    }
+
+    async function triggerQuickBenchmark() {
+      const btn = document.getElementById('btn-quick-bench');
+      btn.disabled = true;
+      btn.innerText = 'Running Live Benchmark...';
+      logMessage('BENCHMARK', 'Executing live microsecond benchmark of primitives and protocols...');
+
+      try {
+        const res = await fetch('/api/benchmark/run-quick', { method: 'POST' });
+        if (res.ok) {
+          const data = await res.json();
+          logMessage('BENCHMARK', `Completed in ${data.total_duration_ms} ms! TLS 1.3: ${data.protocols.tls13_hybrid_latency_ms} ms. WG: ${data.protocols.wireguard_hybrid_latency_ms} ms.`);
+          alert(`Live Benchmark Complete in ${data.total_duration_ms} ms!\n\nTLS 1.3 Hybrid: ${data.protocols.tls13_hybrid_latency_ms} ms\nWireGuard Hybrid: ${data.protocols.wireguard_hybrid_latency_ms} ms\nML-KEM-768 KeyGen: ${data.primitives['X25519+ML-KEM-768'].keygen_us} μs`);
+        }
+      } catch (e) {
+        logMessage('BENCHMARK', `Benchmark error: ${e.message}`);
+      }
+      btn.disabled = false;
+      btn.innerText = '⚡ Run Live Micro-Benchmark';
+    }
+
+    // Initialization
+    checkHealth();
+    updateAdaptiveSliders();
   </script>
 </body>
 </html>

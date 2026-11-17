@@ -21,7 +21,7 @@ An exhaustive, multi-dimensional technical validation of the entire `Hybrid-PQC-
 | **WireGuard Prototype** | Noise_IKpsk2 PQC extension | **VERIFIED** | Tested ML-KEM-512, ML-KEM-768, ML-KEM-1024; anti-replay (TAI64N + 64-bit window) verified. |
 | **Benchmark Integrity** | Empirical decoupling & statistics | **VERIFIED** | Handshake latency decoupled from streaming throughput; 1,000 samples; numbers match JSON exactly. |
 | **Dashboard & API** | Live HTTP server & JSON contracts | **VERIFIED** | All 4 REST endpoints (`/api/status`, `/api/handshake`, `/api/adaptive`, `/api/benchmark`) return 200 OK. |
-| **Automated Test Suites** | All discovery & compliance tests | **VERIFIED** | 59 discovery tests (57 passed, **2 skipped** in Windows sandbox) + 28 dissertation compliance tests (28 passed). Net: **85 passed, 2 skipped, 0 failed**. Both skipped tests pass when run unsandboxed. |
+| **Automated Test Suites** | All discovery & compliance tests | **VERIFIED** | 69 discovery tests (67 passed, **2 skipped** in Windows sandbox) + 28 dissertation compliance tests (28 passed). Net: **95 passed, 2 skipped, 0 failed**. Both skipped tests pass when run unsandboxed. |
 
 ---
 
@@ -145,14 +145,14 @@ The live HTTP and JSON REST API server (`dashboard_server.py`) was audited via l
 ### 7.1 Automated Discovery Unit Test Suite (`tests/`)
 ```
 Command: python -m unittest discover -s tests -v
-Result: Ran 59 tests in 3.441s -> OK (passed=57, skipped=2 in Windows sandbox)
+Result: Ran 69 tests in 4.249s -> OK (passed=67, skipped=2 in Windows sandbox)
 ```
 *(Note: 2 tests skipped in Windows AppContainer sandbox verify live TCP/UDP socket binding; both pass 100% when unsandboxed).*
 
 ### 7.2 Master Dissertation Multi-Aspect Compliance Suite
 ```
 Command: python tests/comprehensive_test_suite.py
-Result: Ran 28 tests in 0.023s -> OK (100.0% Success Rate)
+Result: Ran 28 tests in 0.053s -> OK (100.0% Success Rate)
 
 [CRYPTOGRAPHIC PRIMITIVES]      : 7 / 7  PASS (X25519, ML-KEM-512/768/1024, Composite, IND-CCA2)
 [KEY DERIVATION & DUAL SECURITY]: 4 / 4  PASS (RFC 5869 Dual HKDF, Classical/Quantum Dominance)
@@ -162,7 +162,7 @@ Result: Ran 28 tests in 0.023s -> OK (100.0% Success Rate)
 [PERFORMANCE, SLAS & ENERGY]    : 4 / 4  PASS (Latency SLA, WAN Loss SLA, Memory SLA, Energy Modeling)
 ```
 
-**Total Consolidated Test Score**: **87 run — 85 Passed, 2 Skipped (sandbox TCP/UDP), 0 Failed**.
+**Total Consolidated Test Score**: **97 run — 95 Passed, 2 Skipped (sandbox TCP/UDP), 0 Failed**.
 
 ---
 
@@ -185,6 +185,6 @@ The `Hybrid-PQC-TLS-WireGuard` project has successfully completed all stages of 
 * **Protocol Realism**: Real RFC 8446 TLS 1.3 via OpenSSL 4.0.0 and rigorous experimental Noise_IKpsk2 WireGuard implementation.
 * **Security Resilience**: Strict downgrade prevention preventing forced classical fallback under active network degradation.
 * **Empirical Integrity**: Verified, reproducible benchmark data with decoupled handshake and throughput metrics.
-* **Defensive Software Engineering**: 87 tests executed — 85 passed, 2 skipped due to Windows sandbox TCP/UDP socket restrictions (both pass unsandboxed), 0 failed.
+* **Defensive Software Engineering**: 97 tests executed — 95 passed, 2 skipped due to Windows sandbox TCP/UDP socket restrictions (both pass unsandboxed), 0 failed.
 
 **Final Verdict**: **THE IMPLEMENTATION AND DOCUMENTATION ARE FULLY VALIDATED AND MEET ALL CRITERIA FOR M.TECH CYBERSECURITY MASTER DISSERTATION SUBMISSION.**

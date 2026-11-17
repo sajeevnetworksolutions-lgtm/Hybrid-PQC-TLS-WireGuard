@@ -153,7 +153,7 @@ def main():
     parser.add_argument("--demo-tls", action="store_true", help="Run Real TLS 1.3 OpenSSL demo")
     parser.add_argument("--benchmark", action="store_true", help="Execute complete empirical benchmarking harness")
     parser.add_argument("--quick-benchmark", action="store_true", help="Execute quick empirical benchmark (fewer iters)")
-    parser.add_argument("--serve-dashboard", nargs="?", const=8080, type=int, help="Launch live HTTP dashboard server on port (default 8080)")
+    parser.add_argument("--serve-dashboard", nargs="?", const=8000, type=int, help="Launch live FastAPI dashboard server on port (default 8000)")
     parser.add_argument("--all", action="store_true", help="Run all protocol demos and calibrations")
 
     args = parser.parse_args()
@@ -182,7 +182,7 @@ def main():
         demo_wireguard_protocol(mode="hybrid")
         print("\n")
         print("[+] Unified Execution Completed Successfully.")
-        print("[+] To launch the live interactive dashboard: python main.py --serve-dashboard 8080")
+        print("[+] To launch the live interactive dashboard: python main.py --serve-dashboard 8000")
         print("[+] To run full empirical benchmarks: python main.py --benchmark\n")
         return
 

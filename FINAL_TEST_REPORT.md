@@ -2,8 +2,8 @@
 
 **Project**: M.Tech Cybersecurity Project 3 — Master Dissertation  
 **Document**: Quality Assurance, Verification & Validation (V&V), Security Boundary Testing  
-**Total Tests Executed**: 87 (59 Unit & Integration Tests + 28 Comprehensive Dissertation Tests)  
-**Tests Passed**: 85 | **Tests Skipped**: 2 | **Tests Failed**: 0  
+**Total Tests Executed**: 97 (69 Unit & Integration Tests + 28 Comprehensive Dissertation Tests)  
+**Tests Passed**: 95 | **Tests Skipped**: 2 | **Tests Failed**: 0  
 **Skipped Tests**: `test_13_real_tcp_socket_handshake_and_traffic_secrets` and `test_10_real_udp_socket_peer_communication` — skipped automatically by the Windows AppContainer sandbox, which blocks TCP port-binding (`WinError 10013`) and UDP loopback. Both tests **pass 100% when executed outside the sandbox** (verified by independent re-run).  
 **Date**: November 2026  
 
@@ -55,12 +55,13 @@ The verification strategy of this dissertation enforces a rigorous **defense-in-
 
 ### 2.1 Automated Discovery Unit Test Suite (`tests/`)
 
-Ran via `python -m unittest discover -s tests -v`: **59 Tests Executed — 57 Passed, 2 Skipped, 0 Failed**
+Ran via `python -m unittest discover -s tests -v`: **69 Tests Executed — 67 Passed, 2 Skipped, 0 Failed**
 
 > [!NOTE] The 2 skipped tests (`test_13_real_tcp_socket_handshake_and_traffic_secrets` and `test_10_real_udp_socket_peer_communication`) are skipped automatically in the Windows AppContainer sandbox, which restricts TCP port-binding (`WinError 10013`) and UDP loopback. Both pass 100% when executed unsandboxed.
 
 | Test Module | Test Class / Scope | Tests | Passed | Skipped | Coverage Detail |
 | :--- | :--- | :---: | :---: | :---: | :--- |
+| `test_fastapi_dashboard.py` | `TestFastAPIDashboard` | 10 | 10 | 0 | Health check, status, TLS 1.3 & WireGuard handshake triggers, FIPS 203 keygen/encapsulation, AEAD encryption/decryption, bit-flip tamper rejection, adaptive evaluation, quick benchmark, and Light Mode HTML. |
 | `test_fips203_phase1.py` | `TestPhase1CryptographicFoundation` | 12 | 12 | 0 | Official NIST ACVP test vectors, ML-KEM-512/768/1024 KeyGen, Encaps, Decaps roundtrips, implicit rejection, key length validation. |
 | `test_cross_library.py` | `TestCrossLibraryInteroperability` | 5 | 5 | 0 | Direction A (OpenSSL KeyGen -> Rust Encaps -> OpenSSL Decaps) and Direction B (Rust KeyGen -> OpenSSL Encaps -> Rust Decaps) for ML-KEM-768/1024. ML-KEM-512 omission from OpenSSL 4.0.0 TLS groups documented. |
 | `test_tls13_pqc_real.py` | `TestRealTLS13PostQuantum` | 14 | 13 | **1** | RFC 8446 TLS 1.3 handshakes, `X25519MLKEM768`, ECDSA certificate validation, traffic secret agreement. `test_13` (real TCP loopback) skipped in sandbox; passes unsandboxed. |
@@ -69,7 +70,7 @@ Ran via `python -m unittest discover -s tests -v`: **59 Tests Executed — 57 Pa
 | `test_adaptive.py` | `TestAdaptiveEngine` | 3 | 3 | 0 | RFC 6298 EWMA tracking, Eq. 3 latency prediction, clean vs lossy WAN downshifting. |
 | `test_crypto.py` | `TestCryptoPipeline` | 3 | 3 | 0 | Full cipher suite handshake, Dual HKDF determinism, packet framing and reassembly. |
 | `test_protocols.py` | `TestProtocols` | 2 | 2 | 0 | Protocol state machine exchange and WireGuard proxy tunnel. |
-| **TOTAL** | | **59** | **57** | **2** | |
+| **TOTAL** | | **69** | **67** | **2** | |
 
 ---
 

@@ -217,20 +217,37 @@ class PQCBackendHandler(SimpleHTTPRequestHandler):
         self._send_json_response({"status": "UNAVAILABLE", "message": "Benchmark results not yet generated. Run python benchmark/final_benchmark.py"}, status=404)
 
 
-def run_dashboard_server(host: str = "127.0.0.1", port: int = 8080):
-    """Starts the HTTP dashboard server."""
+def run_dashboard_server(host: str = "127.0.0.1", port: int = 8000):
+    """Starts the FastAPI / HTTP dashboard server."""
+    try:
+        import uvicorn
+        print("=" * 75)
+        print("HYBRID POST-QUANTUM LIVE DASHBOARD FASTAPI SERVER")
+        print("=" * 75)
+        print(f"[+] Server running at: http://{host}:{port}/")
+        print(f"[+] Endpoints:")
+        print(f"    - GET  /                     : Interactive Web Dashboard (Light Mode)")
+        print(f"    - GET  /api/health           : Health-Check API")
+        print(f"    - GET  /api/status           : Live Engine Status & Metrics")
+        print(f"    - POST /api/handshake/tls    : Live RFC 8446 TLS 1.3 Handshake")
+        print(f"    - POST /api/handshake/wireguard: Live Noise_IKpsk2 WireGuard Handshake")
+        print(f"    - POST /api/crypto/keygen    : NIST FIPS 203 ML-KEM Ephemeral Keypair")
+        print(f"    - POST /api/crypto/encrypt   : Real AEAD Authenticated Encryption")
+        print(f"    - POST /api/crypto/decrypt   : Real AEAD Authenticated Decryption & Tamper Test")
+        print(f"    - POST /api/adaptive/evaluate: Dynamic Adaptive Negotiation (Eq. 3)")
+        print(f"    - GET  /api/benchmark/summary: Empirical Benchmark Results (JSON)")
+        print("=" * 75)
+        uvicorn.run("app:app", host=host, port=port, reload=False)
+        return
+    except ImportError:
+        pass
+
     server_address = (host, port)
     httpd = HTTPServer(server_address, PQCBackendHandler)
     print("=" * 75)
     print(f"HYBRID POST-QUANTUM LIVE DASHBOARD BACKEND SERVER")
     print("=" * 75)
     print(f"[+] Server running at: http://{host}:{port}/")
-    print(f"[+] Endpoints:")
-    print(f"    - GET  /              : Interactive Web Dashboard")
-    print(f"    - GET  /api/status    : Live Engine Status & Metrics")
-    print(f"    - POST /api/handshake : Live Handshake Trigger (TLS / WireGuard)")
-    print(f"    - POST /api/adaptive  : Dynamic Adaptive Negotiator")
-    print(f"    - GET  /api/benchmark : Empirical Benchmark Results (JSON)")
     print("=" * 75)
     try:
         httpd.serve_forever()
@@ -240,5 +257,5 @@ def run_dashboard_server(host: str = "127.0.0.1", port: int = 8080):
 
 
 if __name__ == "__main__":
-    port = int(sys.argv[1]) if len(sys.argv) > 1 else 8080
+    port = int(sys.argv[1]) if len(sys.argv) > 1 else 8000
     run_dashboard_server(port=port)

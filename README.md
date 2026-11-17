@@ -67,30 +67,76 @@ Hybrid-PQC-TLS-WireGuard/
 │   ├── test_fips203_phase1.py       # Independent 12-aspect Phase 1 verification suite
 │   ├── test_cross_library.py        # OpenSSL 4.0.0 <-> Rust mlkem cross-library verification (5 tests)
 │   ├── comprehensive_test_suite.py  # Master 28-test multi-aspect verification suite
+│   ├── test_fastapi_dashboard.py    # FastAPI web dashboard REST API test suite (10 tests)
 │   ├── test_crypto.py               # Cryptographic primitives & HKDF tests (3 tests)
 │   ├── test_adaptive.py             # Adaptive negotiation & heuristics tests (3 tests)
 │   └── test_protocols.py            # WireGuard & TLS 1.3 state machine tests (2 tests)
+├── app.py                           # Unified FastAPI Web Backend Application (Port 8000)
+├── start.bat                        # One-Click Windows Startup Script (Batch)
+├── start.ps1                        # One-Click Windows Startup Script (PowerShell)
 └── dissertation_docs/               # Complete Dissertation Proposal & Report
     └── DISSERTATION_FINAL_REPORT.md # Comprehensive 7-chapter dissertation document
 ```
 
 ---
 
-## ⚡ Quick Start & Usage
+## ⚡ Quick Start & One-Click Launch
 
-### 1. Installation
-Install the verified cryptographic dependencies:
-```bash
-pip install -r requirements.txt
+### 1. One-Click Launch on Windows (Recommended)
+Launch the complete application with automated virtual environment check, dependency validation, and browser opening:
+```cmd
+start.bat
 ```
+Or via PowerShell:
+```powershell
+.\start.ps1
+```
+The script automatically starts the FastAPI server and opens your default browser at:
+**`http://127.0.0.1:8000`** (Rendered in clean, high-contrast **Light Mode**).
 
-### 2. Run Phase 1 Cryptographic Verification Suite
+---
+
+### 2. Manual Installation & Startup
+```bash
+# 1. Install dependencies (FastAPI, uvicorn, cryptography, mlkem, etc.)
+pip install -r requirements.txt
+
+# 2. Launch the FastAPI application directly
+python app.py 8000
+# Or via uvicorn:
+python -m uvicorn app:app --host 127.0.0.1 --port 8000
+```
+Open **`http://127.0.0.1:8000`** in your browser.
+
+---
+
+### 3. REST API Endpoints Overview
+The FastAPI backend provides live endpoints for all cryptographic operations:
+| Endpoint | Method | Functionality |
+| :--- | :---: | :--- |
+| `GET /` | `HTML` | Serves the interactive Light Mode Web Dashboard |
+| `GET /api/health` | `JSON` | Health-check endpoint reporting engine & library versions |
+| `GET /api/status` | `JSON` | Live cryptographic, TLS 1.3, WireGuard, and test status |
+| `POST /api/handshake/tls` | `JSON` | Real RFC 8446 TLS 1.3 hybrid handshake (`X25519MLKEM768`) |
+| `POST /api/handshake/wireguard` | `JSON` | Experimental Noise_IKpsk2 WireGuard handshake |
+| `POST /api/crypto/keygen` | `JSON` | Generates real NIST FIPS 203 ML-KEM ephemeral keypairs |
+| `POST /api/crypto/encapsulate` | `JSON` | Encapsulates shared secret against public key |
+| `POST /api/crypto/decapsulate` | `JSON` | Decapsulates ciphertext and verifies secret agreement |
+| `POST /api/crypto/encrypt` | `JSON` | Real AEAD authenticated encryption (AES-256-GCM / ChaCha20-Poly1305) |
+| `POST /api/crypto/decrypt` | `JSON` | Authenticated decryption + bit-flip tamper rejection testing |
+| `POST /api/adaptive/evaluate` | `JSON` | Evaluates RTT, loss, and MTU via Equation 3 heuristic |
+| `GET /api/benchmark/summary` | `JSON` | Serves verified 1,000-iteration empirical benchmark results |
+| `POST /api/benchmark/run-quick`| `JSON` | Triggers a live micro-benchmark and returns measured latencies |
+
+---
+
+### 4. Run Phase 1 Cryptographic Verification Suite
 Execute the independent 12-aspect verification suite validating FIPS 203 ML-KEM (512, 768, 1024), X25519, input validation, and cross-library interoperability:
 ```bash
 python -m unittest tests/test_fips203_phase1.py -v
 ```
 
-### 3. Run Real TLS 1.3 Post-Quantum Handshake (Phase 2)
+### 5. Run Real TLS 1.3 Post-Quantum Handshake (Phase 2)
 Run the live RFC 8446 TLS 1.3 demonstration negotiating `X25519MLKEM768`:
 ```bash
 # 1. Run live TLS 1.3 Post-Quantum Handshake demonstration
@@ -100,13 +146,13 @@ python protocols/tls13_pqc.py --group X25519MLKEM768
 python -m unittest tests/test_tls13_pqc_real.py -v
 ```
 
-### 4. Run Experimental Hybrid WireGuard-Based Protocol Test Suite (Phase 3)
+### 6. Run Experimental Hybrid WireGuard-Based Protocol Test Suite (Phase 3)
 Run the automated test suite for Classical Baseline & Experimental Hybrid WireGuard (`X25519 + ML-KEM-768`):
 ```bash
 python -m unittest tests/test_wireguard_pqc_real.py -v
 ```
 
-### 5. Unified Controller & Interactive Demonstrations
+### 7. Unified Controller & Interactive Demonstrations
 ```bash
 # Run unified execution across TLS 1.3 & WireGuard in hybrid mode
 python main.py
@@ -117,16 +163,11 @@ python main.py --protocol wireguard --mode hybrid    # Experimental WireGuard No
 python main.py --protocol both --mode classical      # Classical baselines (X25519 ECDH)
 python main.py --demo-handshake                      # Pure Hybrid KEM & Dual HKDF pipeline
 python main.py --demo-adaptive                       # Host-calibrated Adaptive Negotiation engine
+python main.py --serve-dashboard 8000                # Live FastAPI Dashboard Server
 ```
 
 ### 6. Launch Live Interactive Web Dashboard Server
-```bash
-# Starts the live HTTP & JSON REST API dashboard server (OpenSSL 4.0.0 + mlkem 0.2.0)
-python main.py --serve-dashboard 8080
-# Open in your browser: http://127.0.0.1:8080
-```
-
-### 7. Run Reproducible Empirical Benchmark Suite
+### 8. Run Reproducible Empirical Benchmark Suite
 ```bash
 # Execute 1,000 primitive iterations & 100 protocol handshakes with statistical analysis
 python benchmark/final_benchmark.py
@@ -135,9 +176,9 @@ python benchmark/final_benchmark.py
 python benchmark/final_benchmark.py --quick
 ```
 
-### 8. Run Full Regression & Integration Test Suite
+### 9. Run Full Regression & Integration Test Suite
 ```bash
-# Run all 59 discovery unit & integration tests (100% Passing)
+# Run all 69 discovery unit & integration tests (including 10 FastAPI tests)
 python -m unittest discover -s tests -v
 
 # Run the master dissertation compliance suite (28 Tests - 100% Passing)

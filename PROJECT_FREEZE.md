@@ -148,11 +148,11 @@ Success Rate         : 100.0%
 
 | Suite | Run | Passed | Skipped | Failed |
 | :--- | :---: | :---: | :---: | :---: |
-| Discovery unit & integration (`tests/`) | 59 | 57 | 2 | 0 |
+| Discovery unit & integration (`tests/`) | 69 | 67 | 2 | 0 |
 | Dissertation compliance (`comprehensive_test_suite.py`) | 28 | 28 | 0 | 0 |
-| **TOTAL** | **87** | **85** | **2** | **0** |
+| **TOTAL** | **97** | **95** | **2** | **0** |
 
-> [!NOTE] The summary figure "87 / 87" that may appear in earlier draft documentation is imprecise. The correct statement is: **87 tests executed — 85 passed, 2 skipped (sandbox TCP/UDP), 0 failed.** The 2 skipped tests are environment-conditional, not defects.
+> [!NOTE] The statement of test execution is: **97 tests executed — 95 passed, 2 skipped (sandbox TCP/UDP), 0 failed.** The 2 skipped tests are environmental constraints of the Windows sandbox, not defects, and pass 100% when run unsandboxed.
 
 ---
 
@@ -244,6 +244,9 @@ Two loopback socket tests (`test_13` and `test_10`) are automatically skipped in
 ### Source Modules
 | Path | Description |
 | :--- | :--- |
+| `app.py` | Unified FastAPI Web Backend Application (Port 8000) |
+| `start.bat` | One-Click Windows Launch Script (Batch) |
+| `start.ps1` | One-Click Windows Launch Script (PowerShell) |
 | `crypto/hybrid_kem.py` | X25519 + ML-KEM hybrid key encapsulation and Dual HKDF |
 | `crypto/dual_hkdf.py` | RFC 5869 HKDF with classical/quantum dominance properties |
 | `protocols/tls13_pqc.py` | Real RFC 8446 TLS 1.3 via OpenSSL 4.0.0 (`X25519MLKEM768`) |
@@ -252,12 +255,13 @@ Two loopback socket tests (`test_13` and `test_10`) are automatically skipped in
 | `adaptive_engine/adaptive_negotiator.py` | Adaptive algorithm selection with downgrade prevention |
 | `adaptive_engine/network_monitor.py` | RFC 6298 EWMA RTT/RTO telemetry |
 | `adaptive_engine/heuristics.py` | Equation 3 latency model and MTU fragmentation heuristics |
-| `dashboard_server.py` | Live HTTP REST API server (4 endpoints) |
+| `dashboard_server.py` | Live HTTP/FastAPI dashboard launcher |
 | `main.py` | CLI entry point for all protocol demonstrations |
 
 ### Test Suites
 | Path | Tests | Description |
 | :--- | :---: | :--- |
+| `tests/test_fastapi_dashboard.py` | 10 | FastAPI web dashboard REST API endpoints (100% pass) |
 | `tests/test_fips203_phase1.py` | 12 | NIST ACVP FIPS 203 KAT vectors, ML-KEM primitives |
 | `tests/test_cross_library.py` | 5 | Rust mlkem ↔ OpenSSL 4.0.0 interoperability |
 | `tests/test_tls13_pqc_real.py` | 14 | Real RFC 8446 TLS 1.3 handshake (13 pass + 1 sandbox-skip) |
