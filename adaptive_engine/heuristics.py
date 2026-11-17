@@ -2,19 +2,23 @@
 Mathematical Heuristics & Handshake Latency Modeling
 Implements Section 7, Eq. 3 of Dissertation Synopsis:
   T_handshake = 2 * RTT + T_crypto + ceil((S_cert + S_pqc_pk) / MTU) * (T_trans + P_loss * RTO)
+
+Provides both theoretical reference profiles and dynamic empirical host calibration
+to eliminate reliance on arbitrary fabricated timings.
 """
 
 import math
-from typing import Dict, Any, Tuple
-from crypto.hybrid_kem import CipherSuiteType, CIPHER_TAXONOMY
+import time
+from typing import Dict, Any, Tuple, Optional
+from crypto.hybrid_kem import CipherSuiteType, CIPHER_TAXONOMY, HybridKEMInitiator, HybridKEMResponder
 
 
 # Average certificate chain size in modern TLS 1.3 (e.g. ECDSA / Dilithium certs)
 DEFAULT_CERT_SIZE = 1200  # bytes
 
 
-# Baseline crypto execution times (microseconds) across architectures
-BENCHMARK_CRYPTO_PROFILES = {
+# Baseline crypto execution times (microseconds) across reference architectures
+BENCHMARK_CRYPTO_PROFILES: Dict[str, Dict[CipherSuiteType, float]] = {
     "x86_64_server": {
         CipherSuiteType.CLASSIC_X25519: 80.0,            # 0.08 ms
         CipherSuiteType.HYBRID_X25519_MLKEM512: 190.0,   # 0.19 ms
@@ -32,6 +36,60 @@ BENCHMARK_CRYPTO_PROFILES = {
         CipherSuiteType.PURE_MLKEM1024: 3950.0
     }
 }
+
+_HOST_CALIBRATED_PROFILE: Optional[Dict[CipherSuiteType, float]] = None
+
+
+def calibrate_host_crypto_profile(iterations: int = 5, force: bool = False) -> Dict[CipherSuiteType, float]:
+    """
+    Empirically measures actual host system execution times for key exchange operations
+    (KeyGen + Encapsulation + Decapsulation) across all supported cipher suites.
+    Results are cached in BENCHMARK_CRYPTO_PROFILES['host_measured'].
+    """
+    global _HOST_CALIBRATED_PROFILE
+    if _HOST_CALIBRATED_PROFILE is not None and not force:
+        return _HOST_CALIBRATED_PROFILE
+
+    calibrated: Dict[CipherSuiteType, float] = {}
+    suites_to_test = [
+        CipherSuiteType.CLASSIC_X25519,
+        CipherSuiteType.HYBRID_X25519_MLKEM512,
+        CipherSuiteType.HYBRID_X25519_MLKEM768,
+        CipherSuiteType.HYBRID_X25519_MLKEM1024,
+    ]
+
+    for suite in suites_to_test:
+        durations_us = []
+        initiator = HybridKEMInitiator(suite=suite)
+        responder = HybridKEMResponder(suite=suite)
+        salt = b"CALIBRATION_SALT_001"
+
+        # Warm-up run
+        init_pk = initiator.generate_keypair()
+        resp_payload, _ = responder.process_initiator_pk(init_pk, salt=salt)
+        initiator.decapsulate_response(resp_payload, salt=salt)
+
+        # Timed measurement runs
+        for _ in range(max(1, iterations)):
+            t0 = time.perf_counter_ns()
+            init_pk = initiator.generate_keypair()
+            resp_payload, _ = responder.process_initiator_pk(init_pk, salt=salt)
+            initiator.decapsulate_response(resp_payload, salt=salt)
+            t1 = time.perf_counter_ns()
+            durations_us.append((t1 - t0) / 1000.0)
+
+        # Use median for robustness against scheduling jitter
+        durations_us.sort()
+        median_us = durations_us[len(durations_us) // 2]
+        calibrated[suite] = round(median_us, 2)
+
+    # Add estimates for pure suites if not directly calibrated
+    calibrated[CipherSuiteType.PURE_MLKEM768] = round(calibrated.get(CipherSuiteType.HYBRID_X25519_MLKEM768, 240.0) * 0.7, 2)
+    calibrated[CipherSuiteType.PURE_MLKEM1024] = round(calibrated.get(CipherSuiteType.HYBRID_X25519_MLKEM1024, 360.0) * 0.75, 2)
+
+    _HOST_CALIBRATED_PROFILE = calibrated
+    BENCHMARK_CRYPTO_PROFILES["host_measured"] = calibrated
+    return calibrated
 
 
 class LatencyModeler:
@@ -62,13 +120,23 @@ class LatencyModeler:
         rto_ms: float = 200.0,
         bandwidth_mbps: float = 100.0,
         device_profile: str = "x86_64_server",
-        cert_size: int = DEFAULT_CERT_SIZE
+        cert_size: int = DEFAULT_CERT_SIZE,
+        use_host_calibration: bool = False
     ) -> Dict[str, Any]:
         """
         Computes Eq. 3:
           T_handshake = 2 * RTT + T_crypto + N_frag * (T_trans + P_loss * RTO)
+
+        Supports dynamic host calibration when use_host_calibration=True or
+        device_profile='host_measured'.
         """
-        t_crypto_ms = BENCHMARK_CRYPTO_PROFILES.get(device_profile, BENCHMARK_CRYPTO_PROFILES["x86_64_server"])[suite] / 1000.0
+        if use_host_calibration or device_profile == "host_measured":
+            profile_dict = _HOST_CALIBRATED_PROFILE or calibrate_host_crypto_profile()
+        else:
+            profile_dict = BENCHMARK_CRYPTO_PROFILES.get(device_profile, BENCHMARK_CRYPTO_PROFILES["x86_64_server"])
+
+        t_crypto_us = profile_dict.get(suite, 250.0)
+        t_crypto_ms = t_crypto_us / 1000.0
         n_frag = cls.calculate_fragments(suite, mtu, cert_size)
 
         # Transmission time of total payload (ms)

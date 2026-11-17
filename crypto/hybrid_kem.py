@@ -1,10 +1,8 @@
 """
-Hybrid Post-Quantum Key Encapsulation Engine
-Combines Classical X25519 (ECDH) with NIST FIPS 203 ML-KEM (512 / 768 / 1024).
-
-Implements:
-- Objective 1: Modular Hybrid Key Exchange Pipeline
-- Dual-security key derivation with Dual HKDF (Eq. 2)
+Hybrid Post-Quantum Key Encapsulation Engine (NIST FIPS 203 + RFC 7748 X25519)
+Remediated in Phase 1: Replaces all simulated/random-byte implementations
+with genuine, constant-time FIPS 203 ML-KEM-512, ML-KEM-768, and ML-KEM-1024
+and domain-separated Dual HKDF key derivation.
 """
 
 import os
@@ -13,7 +11,7 @@ from enum import Enum
 from typing import Tuple, Dict, Any, Optional
 
 from cryptography.hazmat.primitives.asymmetric import x25519
-from cryptography.hazmat.primitives.asymmetric import mlkem
+import mlkem
 
 from crypto.dual_hkdf import DualHKDF
 from crypto.kyber512_reference import MLKEM512PrivateKey, MLKEM512PublicKey
@@ -87,19 +85,32 @@ CIPHER_TAXONOMY = {
 
 
 class HybridKEMInitiator:
+    """
+    Client-side initiator for Classical, Hybrid, and Pure Post-Quantum Key Encapsulation.
+    """
+
     def __init__(self, suite: CipherSuiteType = CipherSuiteType.HYBRID_X25519_MLKEM768):
         self.suite = suite
         self.dual_hkdf = DualHKDF()
-        self.x25519_priv = None
-        self.x25519_pub = None
-        self.pqc_priv = None
-        self.pqc_pub = None
-        self.shared_master_key = None
-        self.keygen_time_us = 0.0
+        self.x25519_priv: Optional[x25519.X25519PrivateKey] = None
+        self.x25519_pub_bytes: bytes = b""
+        
+        # PQC keys
+        self.pqc_kem = None
+        self.pqc_dk = None
+        self.pqc_ek_bytes: bytes = b""
+        
+        self.shared_master_key: Optional[bytes] = None
+        self.keygen_time_us: float = 0.0
 
     def generate_keypair(self) -> bytes:
+        """
+        Generates ephemeral public key(s) according to the selected cipher suite.
+        Returns the serialized composite public key bytes.
+        """
         t0 = time.perf_counter_ns()
 
+        # 1. Classical X25519 Key Generation
         if self.suite in [
             CipherSuiteType.CLASSIC_X25519,
             CipherSuiteType.HYBRID_X25519_MLKEM512,
@@ -107,171 +118,336 @@ class HybridKEMInitiator:
             CipherSuiteType.HYBRID_X25519_MLKEM1024
         ]:
             self.x25519_priv = x25519.X25519PrivateKey.generate()
-            self.x25519_pub = self.x25519_priv.public_key()
-            x25519_raw = self.x25519_pub.public_bytes_raw()
+            self.x25519_pub_bytes = self.x25519_priv.public_key().public_bytes_raw()
         else:
-            x25519_raw = b""
+            self.x25519_priv = None
+            self.x25519_pub_bytes = b""
 
-        pqc_raw = b""
+        # 2. Post-Quantum FIPS 203 ML-KEM Key Generation
         if self.suite == CipherSuiteType.HYBRID_X25519_MLKEM512:
-            self.pqc_priv = MLKEM512PrivateKey.generate()
-            self.pqc_pub = self.pqc_priv.public_key()
-            pqc_raw = self.pqc_pub.public_bytes_raw()
-        elif self.suite in [CipherSuiteType.HYBRID_X25519_MLKEM768, CipherSuiteType.PURE_MLKEM768]:
-            self.pqc_priv = mlkem.MLKEM768PrivateKey.generate()
-            self.pqc_pub = self.pqc_priv.public_key()
-            pqc_raw = self.pqc_pub.public_bytes_raw()
-        elif self.suite in [CipherSuiteType.HYBRID_X25519_MLKEM1024, CipherSuiteType.PURE_MLKEM1024]:
-            self.pqc_priv = mlkem.MLKEM1024PrivateKey.generate()
-            self.pqc_pub = self.pqc_priv.public_key()
-            pqc_raw = self.pqc_pub.public_bytes_raw()
+            self.pqc_kem = mlkem.ML_KEM(mlkem.ParameterSet.ML_KEM_512)
+            ek, dk = self.pqc_kem.key_gen()
+            self.pqc_dk = dk
+            self.pqc_ek_bytes = ek.to_bytes()
 
-        composite_pk = x25519_raw + pqc_raw
+        elif self.suite in [CipherSuiteType.HYBRID_X25519_MLKEM768, CipherSuiteType.PURE_MLKEM768]:
+            self.pqc_kem = mlkem.ML_KEM(mlkem.ParameterSet.ML_KEM_768)
+            ek, dk = self.pqc_kem.key_gen()
+            self.pqc_dk = dk
+            self.pqc_ek_bytes = ek.to_bytes()
+
+        elif self.suite in [CipherSuiteType.HYBRID_X25519_MLKEM1024, CipherSuiteType.PURE_MLKEM1024]:
+            self.pqc_kem = mlkem.ML_KEM(mlkem.ParameterSet.ML_KEM_1024)
+            ek, dk = self.pqc_kem.key_gen()
+            self.pqc_dk = dk
+            self.pqc_ek_bytes = ek.to_bytes()
+
+        else:
+            self.pqc_kem = None
+            self.pqc_dk = None
+            self.pqc_ek_bytes = b""
+
+        composite_pk = self.x25519_pub_bytes + self.pqc_ek_bytes
         self.keygen_time_us = (time.perf_counter_ns() - t0) / 1000.0
         return composite_pk
 
-    def decapsulate_response(self, server_payload: bytes, salt: Optional[bytes] = None) -> bytes:
+    def decapsulate_response(
+        self,
+        server_payload: bytes,
+        salt: Optional[bytes] = None,
+        context: bytes = b""
+    ) -> bytes:
+        """
+        Processes server responder payload, decapsulates shared secrets,
+        and derives the authenticated master secret.
+        """
+        if not isinstance(server_payload, (bytes, bytearray)):
+            raise TypeError("server_payload must be bytes or bytearray")
+
+        expected_size = CIPHER_TAXONOMY[self.suite]["ct_size"]
+        if len(server_payload) != expected_size:
+            raise ValueError(
+                f"Invalid server payload length: {len(server_payload)} bytes; "
+                f"expected {expected_size} bytes for suite {self.suite.value}"
+            )
+
+        # 1. Classical X25519 ECDH
         if self.suite == CipherSuiteType.CLASSIC_X25519:
-            server_ec_pk_bytes = server_payload[:32]
-            server_ec_pub = x25519.X25519PublicKey.from_public_bytes(server_ec_pk_bytes)
+            server_ec_pub = x25519.X25519PublicKey.from_public_bytes(server_payload[:32])
             ec_ss = self.x25519_priv.exchange(server_ec_pub)
-            _, master_key = self.dual_hkdf.derive_hybrid_key(ec_ss, b"", salt=salt)
+            _, master_key = self.dual_hkdf.derive_hybrid_key(
+                classical_secret=ec_ss,
+                pqc_secret=b"",
+                suite_id=self.suite.value,
+                salt=salt,
+                context=context
+            )
             self.shared_master_key = master_key
             return master_key
 
+        # 2. Hybrid Suites
         elif self.suite == CipherSuiteType.HYBRID_X25519_MLKEM512:
-            server_ec_pk_bytes = server_payload[:32]
-            ct_pqc = server_payload[32:32 + 768]
-            server_ec_pub = x25519.X25519PublicKey.from_public_bytes(server_ec_pk_bytes)
+            server_ec_pub = x25519.X25519PublicKey.from_public_bytes(server_payload[:32])
             ec_ss = self.x25519_priv.exchange(server_ec_pub)
-            pqc_ss = self.pqc_priv.decapsulate(ct_pqc)
-            _, master_key = self.dual_hkdf.derive_hybrid_key(ec_ss, pqc_ss, salt=salt)
+            ct_pqc = server_payload[32:32 + 768]
+            pqc_ss = self.pqc_kem.decaps(self.pqc_dk, ct_pqc)
+            _, master_key = self.dual_hkdf.derive_hybrid_key(
+                classical_secret=ec_ss,
+                pqc_secret=bytes(pqc_ss),
+                suite_id=self.suite.value,
+                salt=salt,
+                context=context
+            )
             self.shared_master_key = master_key
             return master_key
 
         elif self.suite == CipherSuiteType.HYBRID_X25519_MLKEM768:
-            server_ec_pk_bytes = server_payload[:32]
-            ct_pqc = server_payload[32:32 + 1088]
-            server_ec_pub = x25519.X25519PublicKey.from_public_bytes(server_ec_pk_bytes)
+            server_ec_pub = x25519.X25519PublicKey.from_public_bytes(server_payload[:32])
             ec_ss = self.x25519_priv.exchange(server_ec_pub)
-            pqc_ss = self.pqc_priv.decapsulate(ct_pqc)
-            _, master_key = self.dual_hkdf.derive_hybrid_key(ec_ss, pqc_ss, salt=salt)
+            ct_pqc = server_payload[32:32 + 1088]
+            pqc_ss = self.pqc_kem.decaps(self.pqc_dk, ct_pqc)
+            _, master_key = self.dual_hkdf.derive_hybrid_key(
+                classical_secret=ec_ss,
+                pqc_secret=bytes(pqc_ss),
+                suite_id=self.suite.value,
+                salt=salt,
+                context=context
+            )
             self.shared_master_key = master_key
             return master_key
 
         elif self.suite == CipherSuiteType.HYBRID_X25519_MLKEM1024:
-            server_ec_pk_bytes = server_payload[:32]
-            ct_pqc = server_payload[32:32 + 1568]
-            server_ec_pub = x25519.X25519PublicKey.from_public_bytes(server_ec_pk_bytes)
+            server_ec_pub = x25519.X25519PublicKey.from_public_bytes(server_payload[:32])
             ec_ss = self.x25519_priv.exchange(server_ec_pub)
-            pqc_ss = self.pqc_priv.decapsulate(ct_pqc)
-            _, master_key = self.dual_hkdf.derive_hybrid_key(ec_ss, pqc_ss, salt=salt)
+            ct_pqc = server_payload[32:32 + 1568]
+            pqc_ss = self.pqc_kem.decaps(self.pqc_dk, ct_pqc)
+            _, master_key = self.dual_hkdf.derive_hybrid_key(
+                classical_secret=ec_ss,
+                pqc_secret=bytes(pqc_ss),
+                suite_id=self.suite.value,
+                salt=salt,
+                context=context
+            )
             self.shared_master_key = master_key
             return master_key
 
+        # 3. Pure PQC Suites
         elif self.suite == CipherSuiteType.PURE_MLKEM768:
             ct_pqc = server_payload[:1088]
-            pqc_ss = self.pqc_priv.decapsulate(ct_pqc)
-            _, master_key = self.dual_hkdf.derive_hybrid_key(b"", pqc_ss, salt=salt)
+            pqc_ss = self.pqc_kem.decaps(self.pqc_dk, ct_pqc)
+            _, master_key = self.dual_hkdf.derive_hybrid_key(
+                classical_secret=b"",
+                pqc_secret=bytes(pqc_ss),
+                suite_id=self.suite.value,
+                salt=salt,
+                context=context
+            )
             self.shared_master_key = master_key
             return master_key
 
         elif self.suite == CipherSuiteType.PURE_MLKEM1024:
             ct_pqc = server_payload[:1568]
-            pqc_ss = self.pqc_priv.decapsulate(ct_pqc)
-            _, master_key = self.dual_hkdf.derive_hybrid_key(b"", pqc_ss, salt=salt)
+            pqc_ss = self.pqc_kem.decaps(self.pqc_dk, ct_pqc)
+            _, master_key = self.dual_hkdf.derive_hybrid_key(
+                classical_secret=b"",
+                pqc_secret=bytes(pqc_ss),
+                suite_id=self.suite.value,
+                salt=salt,
+                context=context
+            )
             self.shared_master_key = master_key
             return master_key
 
         raise ValueError(f"Unsupported cipher suite: {self.suite}")
 
+    def zeroize(self):
+        """
+        Best-effort cleanup of sensitive private keys and derived secret material.
+
+        IMPORTANT MEMORY LIMITATION:
+        Python's memory management model uses an immutable object allocator and garbage
+        collector. Setting references to None or assigning new zero-filled bytes does NOT
+        perform in-place memory wiping (memset) on the previously allocated heap buffer.
+        Residual key material may remain in memory pools until overwritten by subsequent
+        allocations. True constant-time zeroization requires native C/Rust buffers with
+        explicit secure-erase primitives (e.g. `memset_s` or `zeroize` crate).
+        """
+        self.x25519_priv = None
+        self.pqc_dk = None
+        if self.shared_master_key is not None:
+            self.shared_master_key = b"\x00" * len(self.shared_master_key)
+
 
 class HybridKEMResponder:
+    """
+    Server-side responder for Classical, Hybrid, and Pure Post-Quantum Key Encapsulation.
+    """
+
     def __init__(self, suite: CipherSuiteType = CipherSuiteType.HYBRID_X25519_MLKEM768):
         self.suite = suite
         self.dual_hkdf = DualHKDF()
-        self.shared_master_key = None
-        self.encaps_time_us = 0.0
+        self.shared_master_key: Optional[bytes] = None
+        self.encaps_time_us: float = 0.0
 
-    def process_initiator_pk(self, initiator_composite_pk: bytes, salt: Optional[bytes] = None) -> Tuple[bytes, bytes]:
+    def process_initiator_pk(
+        self,
+        initiator_composite_pk: bytes,
+        salt: Optional[bytes] = None,
+        context: bytes = b""
+    ) -> Tuple[bytes, bytes]:
+        """
+        Validates initiator composite public key, encapsulates secrets,
+        derives master key, and constructs the responder payload.
+        Returns: (response_payload, master_key)
+        """
         t0 = time.perf_counter_ns()
 
+        if not isinstance(initiator_composite_pk, (bytes, bytearray)):
+            raise TypeError("initiator_composite_pk must be bytes or bytearray")
+
+        expected_pk_size = CIPHER_TAXONOMY[self.suite]["pk_size"]
+        if len(initiator_composite_pk) != expected_pk_size:
+            raise ValueError(
+                f"Invalid initiator public key length: {len(initiator_composite_pk)} bytes; "
+                f"expected {expected_pk_size} bytes for suite {self.suite.value}"
+            )
+
+        # 1. Classical X25519
         if self.suite == CipherSuiteType.CLASSIC_X25519:
-            init_ec_pk_bytes = initiator_composite_pk[:32]
-            init_ec_pub = x25519.X25519PublicKey.from_public_bytes(init_ec_pk_bytes)
+            init_ec_pub = x25519.X25519PublicKey.from_public_bytes(initiator_composite_pk[:32])
             server_ec_priv = x25519.X25519PrivateKey.generate()
-            server_ec_pub = server_ec_priv.public_key()
-            server_ec_raw = server_ec_pub.public_bytes_raw()
+            server_ec_raw = server_ec_priv.public_key().public_bytes_raw()
             ec_ss = server_ec_priv.exchange(init_ec_pub)
-            _, master_key = self.dual_hkdf.derive_hybrid_key(ec_ss, b"", salt=salt)
+            _, master_key = self.dual_hkdf.derive_hybrid_key(
+                classical_secret=ec_ss,
+                pqc_secret=b"",
+                suite_id=self.suite.value,
+                salt=salt,
+                context=context
+            )
             self.shared_master_key = master_key
             self.encaps_time_us = (time.perf_counter_ns() - t0) / 1000.0
             return server_ec_raw, master_key
 
+        # 2. Hybrid ML-KEM-512
         elif self.suite == CipherSuiteType.HYBRID_X25519_MLKEM512:
-            init_ec_pk_bytes = initiator_composite_pk[:32]
-            init_pqc_pk_bytes = initiator_composite_pk[32:32 + 800]
-            init_ec_pub = x25519.X25519PublicKey.from_public_bytes(init_ec_pk_bytes)
-            init_pqc_pub = MLKEM512PublicKey.from_public_bytes(init_pqc_pk_bytes)
+            init_ec_pub = x25519.X25519PublicKey.from_public_bytes(initiator_composite_pk[:32])
+            pqc_pk_bytes = initiator_composite_pk[32:32 + 800]
+            kem = mlkem.ML_KEM(mlkem.ParameterSet.ML_KEM_512)
+            ek = mlkem.EncapsKey.from_bytes(pqc_pk_bytes)
+
             server_ec_priv = x25519.X25519PrivateKey.generate()
-            server_ec_pub = server_ec_priv.public_key()
-            server_ec_raw = server_ec_pub.public_bytes_raw()
+            server_ec_raw = server_ec_priv.public_key().public_bytes_raw()
             ec_ss = server_ec_priv.exchange(init_ec_pub)
-            pqc_ss, ct_pqc = init_pqc_pub.encapsulate()
-            _, master_key = self.dual_hkdf.derive_hybrid_key(ec_ss, pqc_ss, salt=salt)
-            response_payload = server_ec_raw + ct_pqc
+            pqc_ss, ct_pqc = kem.encaps(ek)
+
+            _, master_key = self.dual_hkdf.derive_hybrid_key(
+                classical_secret=ec_ss,
+                pqc_secret=bytes(pqc_ss),
+                suite_id=self.suite.value,
+                salt=salt,
+                context=context
+            )
+            response_payload = server_ec_raw + bytes(ct_pqc)
             self.shared_master_key = master_key
             self.encaps_time_us = (time.perf_counter_ns() - t0) / 1000.0
             return response_payload, master_key
 
+        # 3. Hybrid ML-KEM-768
         elif self.suite == CipherSuiteType.HYBRID_X25519_MLKEM768:
-            init_ec_pk_bytes = initiator_composite_pk[:32]
-            init_pqc_pk_bytes = initiator_composite_pk[32:32 + 1184]
-            init_ec_pub = x25519.X25519PublicKey.from_public_bytes(init_ec_pk_bytes)
-            init_pqc_pub = mlkem.MLKEM768PublicKey.from_public_bytes(init_pqc_pk_bytes)
+            init_ec_pub = x25519.X25519PublicKey.from_public_bytes(initiator_composite_pk[:32])
+            pqc_pk_bytes = initiator_composite_pk[32:32 + 1184]
+            kem = mlkem.ML_KEM(mlkem.ParameterSet.ML_KEM_768)
+            ek = mlkem.EncapsKey.from_bytes(pqc_pk_bytes)
+
             server_ec_priv = x25519.X25519PrivateKey.generate()
-            server_ec_pub = server_ec_priv.public_key()
-            server_ec_raw = server_ec_pub.public_bytes_raw()
+            server_ec_raw = server_ec_priv.public_key().public_bytes_raw()
             ec_ss = server_ec_priv.exchange(init_ec_pub)
-            pqc_ss, ct_pqc = init_pqc_pub.encapsulate()
-            _, master_key = self.dual_hkdf.derive_hybrid_key(ec_ss, pqc_ss, salt=salt)
-            response_payload = server_ec_raw + ct_pqc
+            pqc_ss, ct_pqc = kem.encaps(ek)
+
+            _, master_key = self.dual_hkdf.derive_hybrid_key(
+                classical_secret=ec_ss,
+                pqc_secret=bytes(pqc_ss),
+                suite_id=self.suite.value,
+                salt=salt,
+                context=context
+            )
+            response_payload = server_ec_raw + bytes(ct_pqc)
             self.shared_master_key = master_key
             self.encaps_time_us = (time.perf_counter_ns() - t0) / 1000.0
             return response_payload, master_key
 
+        # 4. Hybrid ML-KEM-1024
         elif self.suite == CipherSuiteType.HYBRID_X25519_MLKEM1024:
-            init_ec_pk_bytes = initiator_composite_pk[:32]
-            init_pqc_pk_bytes = initiator_composite_pk[32:32 + 1568]
-            init_ec_pub = x25519.X25519PublicKey.from_public_bytes(init_ec_pk_bytes)
-            init_pqc_pub = mlkem.MLKEM1024PublicKey.from_public_bytes(init_pqc_pk_bytes)
+            init_ec_pub = x25519.X25519PublicKey.from_public_bytes(initiator_composite_pk[:32])
+            pqc_pk_bytes = initiator_composite_pk[32:32 + 1568]
+            kem = mlkem.ML_KEM(mlkem.ParameterSet.ML_KEM_1024)
+            ek = mlkem.EncapsKey.from_bytes(pqc_pk_bytes)
+
             server_ec_priv = x25519.X25519PrivateKey.generate()
-            server_ec_pub = server_ec_priv.public_key()
-            server_ec_raw = server_ec_pub.public_bytes_raw()
+            server_ec_raw = server_ec_priv.public_key().public_bytes_raw()
             ec_ss = server_ec_priv.exchange(init_ec_pub)
-            pqc_ss, ct_pqc = init_pqc_pub.encapsulate()
-            _, master_key = self.dual_hkdf.derive_hybrid_key(ec_ss, pqc_ss, salt=salt)
-            response_payload = server_ec_raw + ct_pqc
+            pqc_ss, ct_pqc = kem.encaps(ek)
+
+            _, master_key = self.dual_hkdf.derive_hybrid_key(
+                classical_secret=ec_ss,
+                pqc_secret=bytes(pqc_ss),
+                suite_id=self.suite.value,
+                salt=salt,
+                context=context
+            )
+            response_payload = server_ec_raw + bytes(ct_pqc)
             self.shared_master_key = master_key
             self.encaps_time_us = (time.perf_counter_ns() - t0) / 1000.0
             return response_payload, master_key
 
+        # 5. Pure ML-KEM-768
         elif self.suite == CipherSuiteType.PURE_MLKEM768:
-            init_pqc_pk_bytes = initiator_composite_pk[:1184]
-            init_pqc_pub = mlkem.MLKEM768PublicKey.from_public_bytes(init_pqc_pk_bytes)
-            pqc_ss, ct_pqc = init_pqc_pub.encapsulate()
-            _, master_key = self.dual_hkdf.derive_hybrid_key(b"", pqc_ss, salt=salt)
-            self.shared_master_key = master_key
-            self.encaps_time_us = (time.perf_counter_ns() - t0) / 1000.0
-            return ct_pqc, master_key
+            kem = mlkem.ML_KEM(mlkem.ParameterSet.ML_KEM_768)
+            ek = mlkem.EncapsKey.from_bytes(initiator_composite_pk)
+            pqc_ss, ct_pqc = kem.encaps(ek)
 
-        elif self.suite == CipherSuiteType.PURE_MLKEM1024:
-            init_pqc_pk_bytes = initiator_composite_pk[:1568]
-            init_pqc_pub = mlkem.MLKEM1024PublicKey.from_public_bytes(init_pqc_pk_bytes)
-            pqc_ss, ct_pqc = init_pqc_pub.encapsulate()
-            _, master_key = self.dual_hkdf.derive_hybrid_key(b"", pqc_ss, salt=salt)
+            _, master_key = self.dual_hkdf.derive_hybrid_key(
+                classical_secret=b"",
+                pqc_secret=bytes(pqc_ss),
+                suite_id=self.suite.value,
+                salt=salt,
+                context=context
+            )
             self.shared_master_key = master_key
             self.encaps_time_us = (time.perf_counter_ns() - t0) / 1000.0
-            return ct_pqc, master_key
+            return bytes(ct_pqc), master_key
+
+        # 6. Pure ML-KEM-1024
+        elif self.suite == CipherSuiteType.PURE_MLKEM1024:
+            kem = mlkem.ML_KEM(mlkem.ParameterSet.ML_KEM_1024)
+            ek = mlkem.EncapsKey.from_bytes(initiator_composite_pk)
+            pqc_ss, ct_pqc = kem.encaps(ek)
+
+            _, master_key = self.dual_hkdf.derive_hybrid_key(
+                classical_secret=b"",
+                pqc_secret=bytes(pqc_ss),
+                suite_id=self.suite.value,
+                salt=salt,
+                context=context
+            )
+            self.shared_master_key = master_key
+            self.encaps_time_us = (time.perf_counter_ns() - t0) / 1000.0
+            return bytes(ct_pqc), master_key
 
         raise ValueError(f"Unsupported cipher suite: {self.suite}")
+
+    def zeroize(self):
+        """
+        Best-effort cleanup of sensitive derived secret material.
+
+        IMPORTANT MEMORY LIMITATION:
+        Python's memory management model uses an immutable object allocator and garbage
+        collector. Setting references to None or assigning new zero-filled bytes does NOT
+        perform in-place memory wiping (memset) on the previously allocated heap buffer.
+        Residual key material may remain in memory pools until overwritten by subsequent
+        allocations. True constant-time zeroization requires native C/Rust buffers with
+        explicit secure-erase primitives (e.g. `memset_s` or `zeroize` crate).
+        """
+        if self.shared_master_key is not None:
+            self.shared_master_key = b"\x00" * len(self.shared_master_key)

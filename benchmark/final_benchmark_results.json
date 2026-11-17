@@ -1,0 +1,395 @@
+{
+  "benchmark_title": "Final Empirical Post-Quantum Performance Benchmark",
+  "date_utc": "2026-11-17 15:18:01Z",
+  "wall_time_sec": 1.24,
+  "environment": {
+    "os": "Windows-10-10.0.26300-SP0",
+    "processor": "Intel64 Family 6 Model 140 Stepping 2, GenuineIntel",
+    "machine": "AMD64",
+    "python_version": "3.11.2",
+    "openssl_version": "OpenSSL 4.0.0 14 Apr 2026",
+    "mlkem_library": "Rust mlkem 0.2.0 (FIPS 203)"
+  },
+  "parameters": {
+    "primitive_iterations": 1000,
+    "protocol_iterations": 100
+  },
+  "cryptographic_primitives": {
+    "X25519": {
+      "keygen": {
+        "count": 1000,
+        "mean_us": 46.04,
+        "median_us": 39.55,
+        "std_us": 13.16,
+        "min_us": 36.15,
+        "max_us": 88.55,
+        "p95_us": 76.85,
+        "p99_us": 80.9,
+        "mean_ms": 0.046,
+        "median_ms": 0.04
+      },
+      "exchange_encaps": {
+        "count": 1000,
+        "mean_us": 33.72,
+        "median_us": 30.45,
+        "std_us": 6.48,
+        "min_us": 28.2,
+        "max_us": 61.85,
+        "p95_us": 48.1,
+        "p99_us": 53.0,
+        "mean_ms": 0.034,
+        "median_ms": 0.03
+      },
+      "exchange_decaps": {
+        "count": 1000,
+        "mean_us": 33.72,
+        "median_us": 30.45,
+        "std_us": 6.48,
+        "min_us": 28.2,
+        "max_us": 61.85,
+        "p95_us": 48.1,
+        "p99_us": 53.0,
+        "mean_ms": 0.034,
+        "median_ms": 0.03
+      },
+      "roundtrip": {
+        "count": 1000,
+        "mean_us": 159.54,
+        "median_us": 140.2,
+        "std_us": 38.71,
+        "min_us": 129.1,
+        "max_us": 282.9,
+        "p95_us": 249.5,
+        "p99_us": 260.5,
+        "mean_ms": 0.16,
+        "median_ms": 0.14
+      }
+    },
+    "ML-KEM-512": {
+      "keygen": {
+        "count": 1000,
+        "mean_us": 31.71,
+        "median_us": 30.8,
+        "std_us": 3.23,
+        "min_us": 29.9,
+        "max_us": 70.0,
+        "p95_us": 37.7,
+        "p99_us": 47.8,
+        "mean_ms": 0.032,
+        "median_ms": 0.031
+      },
+      "encaps": {
+        "count": 1000,
+        "mean_us": 14.73,
+        "median_us": 14.4,
+        "std_us": 1.62,
+        "min_us": 14.0,
+        "max_us": 42.6,
+        "p95_us": 16.1,
+        "p99_us": 21.1,
+        "mean_ms": 0.015,
+        "median_ms": 0.014
+      },
+      "decaps": {
+        "count": 1000,
+        "mean_us": 21.69,
+        "median_us": 21.3,
+        "std_us": 1.67,
+        "min_us": 20.9,
+        "max_us": 42.0,
+        "p95_us": 24.2,
+        "p99_us": 29.7,
+        "mean_ms": 0.022,
+        "median_ms": 0.021
+      },
+      "roundtrip": {
+        "count": 1000,
+        "mean_us": 68.13,
+        "median_us": 66.5,
+        "std_us": 5.4,
+        "min_us": 65.5,
+        "max_us": 116.3,
+        "p95_us": 77.8,
+        "p99_us": 94.2,
+        "mean_ms": 0.068,
+        "median_ms": 0.067
+      }
+    },
+    "ML-KEM-768": {
+      "keygen": {
+        "count": 1000,
+        "mean_us": 36.05,
+        "median_us": 35.2,
+        "std_us": 4.93,
+        "min_us": 33.8,
+        "max_us": 130.1,
+        "p95_us": 41.6,
+        "p99_us": 53.7,
+        "mean_ms": 0.036,
+        "median_ms": 0.035
+      },
+      "encaps": {
+        "count": 1000,
+        "mean_us": 19.8,
+        "median_us": 19.2,
+        "std_us": 2.53,
+        "min_us": 18.5,
+        "max_us": 44.7,
+        "p95_us": 24.3,
+        "p99_us": 32.7,
+        "mean_ms": 0.02,
+        "median_ms": 0.019
+      },
+      "decaps": {
+        "count": 1000,
+        "mean_us": 29.04,
+        "median_us": 28.8,
+        "std_us": 2.05,
+        "min_us": 27.9,
+        "max_us": 48.8,
+        "p95_us": 32.8,
+        "p99_us": 39.0,
+        "mean_ms": 0.029,
+        "median_ms": 0.029
+      },
+      "roundtrip": {
+        "count": 1000,
+        "mean_us": 84.89,
+        "median_us": 83.4,
+        "std_us": 7.68,
+        "min_us": 80.6,
+        "max_us": 180.4,
+        "p95_us": 100.1,
+        "p99_us": 120.8,
+        "mean_ms": 0.085,
+        "median_ms": 0.083
+      }
+    },
+    "ML-KEM-1024": {
+      "keygen": {
+        "count": 1000,
+        "mean_us": 56.2,
+        "median_us": 54.9,
+        "std_us": 5.95,
+        "min_us": 52.7,
+        "max_us": 110.8,
+        "p95_us": 66.7,
+        "p99_us": 87.5,
+        "mean_ms": 0.056,
+        "median_ms": 0.055
+      },
+      "encaps": {
+        "count": 1000,
+        "mean_us": 26.94,
+        "median_us": 26.3,
+        "std_us": 3.0,
+        "min_us": 25.5,
+        "max_us": 57.0,
+        "p95_us": 32.4,
+        "p99_us": 42.4,
+        "mean_ms": 0.027,
+        "median_ms": 0.026
+      },
+      "decaps": {
+        "count": 1000,
+        "mean_us": 40.53,
+        "median_us": 39.8,
+        "std_us": 4.53,
+        "min_us": 38.7,
+        "max_us": 86.6,
+        "p95_us": 47.3,
+        "p99_us": 66.4,
+        "mean_ms": 0.041,
+        "median_ms": 0.04
+      },
+      "roundtrip": {
+        "count": 1000,
+        "mean_us": 123.67,
+        "median_us": 121.2,
+        "std_us": 11.91,
+        "min_us": 117.5,
+        "max_us": 210.1,
+        "p95_us": 149.1,
+        "p99_us": 183.9,
+        "mean_ms": 0.124,
+        "median_ms": 0.121
+      }
+    },
+    "HYBRID_X25519_MLKEM768": {
+      "keygen": {
+        "count": 1000,
+        "mean_us": 83.13,
+        "median_us": 80.3,
+        "std_us": 10.98,
+        "min_us": 77.3,
+        "max_us": 194.0,
+        "p95_us": 107.1,
+        "p99_us": 134.2,
+        "mean_ms": 0.083,
+        "median_ms": 0.08
+      },
+      "encaps": {
+        "count": 1000,
+        "mean_us": 128.06,
+        "median_us": 123.0,
+        "std_us": 22.04,
+        "min_us": 118.8,
+        "max_us": 527.6,
+        "p95_us": 170.8,
+        "p99_us": 212.7,
+        "mean_ms": 0.128,
+        "median_ms": 0.123
+      },
+      "decaps": {
+        "count": 1000,
+        "mean_us": 77.05,
+        "median_us": 74.9,
+        "std_us": 9.42,
+        "min_us": 72.3,
+        "max_us": 144.6,
+        "p95_us": 98.4,
+        "p99_us": 125.5,
+        "mean_ms": 0.077,
+        "median_ms": 0.075
+      },
+      "roundtrip": {
+        "count": 1000,
+        "mean_us": 288.24,
+        "median_us": 278.6,
+        "std_us": 38.12,
+        "min_us": 269.9,
+        "max_us": 804.2,
+        "p95_us": 354.3,
+        "p99_us": 458.1,
+        "mean_ms": 0.288,
+        "median_ms": 0.279
+      }
+    }
+  },
+  "tls13_handshake": {
+    "Classical_X25519": {
+      "group": "X25519",
+      "handshake_statistics": {
+        "count": 100,
+        "mean_us": 630.61,
+        "median_us": 606.35,
+        "std_us": 73.71,
+        "min_us": 591.5,
+        "max_us": 989.6,
+        "p95_us": 788.7,
+        "p99_us": 989.6,
+        "mean_ms": 0.631,
+        "median_ms": 0.606
+      },
+      "throughput_mb_s": 746.77
+    },
+    "Hybrid_X25519MLKEM768": {
+      "group": "X25519MLKEM768",
+      "handshake_statistics": {
+        "count": 100,
+        "mean_us": 928.79,
+        "median_us": 879.15,
+        "std_us": 161.24,
+        "min_us": 793.0,
+        "max_us": 1538.7,
+        "p95_us": 1448.8,
+        "p99_us": 1538.7,
+        "mean_ms": 0.929,
+        "median_ms": 0.879
+      },
+      "throughput_mb_s": 556.02
+    }
+  },
+  "wireguard_handshake": {
+    "Classical_NoiseIK": {
+      "msg1_init_bytes": 148,
+      "msg2_resp_bytes": 92,
+      "msg1_statistics": {
+        "count": 100,
+        "mean_us": 141.53,
+        "median_us": 141.0,
+        "std_us": 7.57,
+        "min_us": 136.4,
+        "max_us": 210.9,
+        "p95_us": 146.0,
+        "p99_us": 210.9,
+        "mean_ms": 0.142,
+        "median_ms": 0.141
+      },
+      "msg2_statistics": {
+        "count": 100,
+        "mean_us": 246.26,
+        "median_us": 245.05,
+        "std_us": 9.24,
+        "min_us": 238.4,
+        "max_us": 308.5,
+        "p95_us": 266.5,
+        "p99_us": 308.5,
+        "mean_ms": 0.246,
+        "median_ms": 0.245
+      },
+      "handshake_statistics": {
+        "count": 100,
+        "mean_us": 492.23,
+        "median_us": 490.8,
+        "std_us": 15.74,
+        "min_us": 477.0,
+        "max_us": 591.4,
+        "p95_us": 525.0,
+        "p99_us": 591.4,
+        "mean_ms": 0.492,
+        "median_ms": 0.491
+      },
+      "transport_throughput_mb_s": 1060.22
+    },
+    "Hybrid_NoiseIKpsk2_MLKEM768": {
+      "msg1_init_bytes": 1332,
+      "msg2_resp_bytes": 1180,
+      "msg1_statistics": {
+        "count": 100,
+        "mean_us": 194.27,
+        "median_us": 189.0,
+        "std_us": 21.03,
+        "min_us": 183.3,
+        "max_us": 355.4,
+        "p95_us": 239.9,
+        "p99_us": 355.4,
+        "mean_ms": 0.194,
+        "median_ms": 0.189
+      },
+      "msg2_statistics": {
+        "count": 100,
+        "mean_us": 307.73,
+        "median_us": 301.4,
+        "std_us": 21.86,
+        "min_us": 293.3,
+        "max_us": 417.6,
+        "p95_us": 353.2,
+        "p99_us": 417.6,
+        "mean_ms": 0.308,
+        "median_ms": 0.301
+      },
+      "handshake_statistics": {
+        "count": 100,
+        "mean_us": 651.85,
+        "median_us": 636.55,
+        "std_us": 50.07,
+        "min_us": 619.5,
+        "max_us": 927.1,
+        "p95_us": 781.6,
+        "p99_us": 927.1,
+        "mean_ms": 0.652,
+        "median_ms": 0.637
+      },
+      "transport_throughput_mb_s": 1323.45
+    }
+  },
+  "comparisons": {
+    "tls13_handshake_overhead_us": 272.8,
+    "tls13_overhead_percent": 44.99,
+    "wireguard_handshake_overhead_us": 145.75,
+    "wireguard_overhead_percent": 29.7,
+    "wireguard_msg1_size_increase_bytes": 1184,
+    "wireguard_msg2_size_increase_bytes": 1088
+  }
+}

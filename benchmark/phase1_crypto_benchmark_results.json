@@ -1,0 +1,326 @@
+{
+  "metadata": {
+    "timestamp": "2026-11-16 20:36:57 UTC",
+    "iterations_per_trial": 1000,
+    "trials_count": 5,
+    "warmup_iterations": 100,
+    "total_samples_per_operation": 5000,
+    "elapsed_seconds": 19.88
+  },
+  "environment": {
+    "os": "Windows-10-10.0.26300-SP0",
+    "system": "Windows",
+    "release": "10",
+    "machine": "AMD64",
+    "processor": "Intel64 Family 6 Model 140 Stepping 2, GenuineIntel",
+    "cpu_count_physical": 4,
+    "cpu_count_logical": 8,
+    "total_ram_gb": 15.65,
+    "python_version": "3.11.2 (tags/v3.11.2:878ead1, Feb  7 2023, 16:38:35) [MSC v.1934 64 bit (AMD64)]",
+    "cryptography_version": "48.0.0",
+    "openssl_version": "OpenSSL 4.0.0 14 Apr 2026",
+    "mlkem_version": "0.2.0"
+  },
+  "standalone_primitives": {
+    "X25519": {
+      "KeyGen_us": {
+        "mean": 60.83412,
+        "median": 46.3,
+        "std": 32.28267848384979,
+        "p95": 113.0,
+        "p99": 196.2
+      },
+      "Exchange_us": {
+        "mean": 50.15092,
+        "median": 39.9,
+        "std": 25.66830106355888,
+        "p95": 89.2,
+        "p99": 131.8
+      }
+    },
+    "ML-KEM-512": {
+      "KeyGen_us": {
+        "mean": 33.39132,
+        "median": 26.7,
+        "std": 17.624077004928658,
+        "p95": 60.8,
+        "p99": 92.4
+      },
+      "Encaps_us": {
+        "mean": 21.99918,
+        "median": 17.15,
+        "std": 12.21069832394166,
+        "p95": 39.8,
+        "p99": 68.3
+      },
+      "Decaps_us": {
+        "mean": 31.83558,
+        "median": 25.3,
+        "std": 14.799256321218719,
+        "p95": 59.2,
+        "p99": 83.2
+      }
+    },
+    "ML-KEM-768": {
+      "KeyGen_us": {
+        "mean": 276.87488,
+        "median": 215.3,
+        "std": 119.94965312514483,
+        "p95": 490.5,
+        "p99": 674.7
+      },
+      "Encaps_us": {
+        "mean": 113.45786,
+        "median": 86.6,
+        "std": 52.43395875028363,
+        "p95": 201.6,
+        "p99": 299.6
+      },
+      "Decaps_us": {
+        "mean": 109.25628,
+        "median": 85.5,
+        "std": 48.77875104871356,
+        "p95": 192.0,
+        "p99": 263.6
+      }
+    },
+    "ML-KEM-1024": {
+      "KeyGen_us": {
+        "mean": 383.82338,
+        "median": 297.7,
+        "std": 187.9033983109272,
+        "p95": 678.5,
+        "p99": 905.4
+      },
+      "Encaps_us": {
+        "mean": 158.59442,
+        "median": 120.5,
+        "std": 76.92326530128919,
+        "p95": 285.4,
+        "p99": 437.9
+      },
+      "Decaps_us": {
+        "mean": 144.73274,
+        "median": 110.6,
+        "std": 64.33867162932263,
+        "p95": 256.5,
+        "p99": 380.8
+      }
+    },
+    "DualHKDF_Combine": {
+      "Derive_us": {
+        "mean": 10.750960000000001,
+        "median": 9.1,
+        "std": 6.434044642718366,
+        "p95": 20.4,
+        "p99": 33.2
+      }
+    }
+  },
+  "cipher_suites": {
+    "X25519": {
+      "security_level": "128-bit Classical",
+      "pk_size_bytes": 32,
+      "ct_size_bytes": 32,
+      "total_payload_bytes": 64,
+      "KeyGen_us": {
+        "mean": 70.99554,
+        "median": 52.8,
+        "std": 37.80514795567913,
+        "p95": 128.2,
+        "p99": 205.8
+      },
+      "Server_Encaps_Derive_us": {
+        "mean": 140.75762,
+        "median": 105.0,
+        "std": 67.34060158076888,
+        "p95": 253.2,
+        "p99": 385.0
+      },
+      "Client_Decaps_Derive_us": {
+        "mean": 73.06288,
+        "median": 54.7,
+        "std": 36.710514113464754,
+        "p95": 129.4,
+        "p99": 211.4
+      },
+      "Total_Crypto_Handshake_us": {
+        "mean": 284.81604,
+        "median": 216.5,
+        "std": 129.80355470972842,
+        "p95": 513.5999999999999,
+        "p99": 759.4000000000001
+      }
+    },
+    "X25519+ML-KEM-512": {
+      "security_level": "Dual (Classical 128-bit + NIST Level 1)",
+      "pk_size_bytes": 832,
+      "ct_size_bytes": 800,
+      "total_payload_bytes": 1632,
+      "KeyGen_us": {
+        "mean": 128.92302,
+        "median": 101.5,
+        "std": 66.3038752476367,
+        "p95": 237.7,
+        "p99": 359.8
+      },
+      "Server_Encaps_Derive_us": {
+        "mean": 212.84612,
+        "median": 167.35000000000002,
+        "std": 108.58914023612603,
+        "p95": 396.0,
+        "p99": 589.4
+      },
+      "Client_Decaps_Derive_us": {
+        "mean": 130.57362,
+        "median": 102.3,
+        "std": 165.9801024128344,
+        "p95": 234.4,
+        "p99": 344.1
+      },
+      "Total_Crypto_Handshake_us": {
+        "mean": 472.34276,
+        "median": 370.7,
+        "std": 275.4492704940522,
+        "p95": 862.4000000000001,
+        "p99": 1228.2
+      }
+    },
+    "X25519+ML-KEM-768": {
+      "security_level": "Dual (Classical 128-bit + NIST Level 3)",
+      "pk_size_bytes": 1216,
+      "ct_size_bytes": 1120,
+      "total_payload_bytes": 2336,
+      "KeyGen_us": {
+        "mean": 137.5873,
+        "median": 100.5,
+        "std": 66.2331314845618,
+        "p95": 254.0,
+        "p99": 396.2
+      },
+      "Server_Encaps_Derive_us": {
+        "mean": 213.0185,
+        "median": 153.8,
+        "std": 156.66061834940623,
+        "p95": 384.7,
+        "p99": 602.6
+      },
+      "Client_Decaps_Derive_us": {
+        "mean": 127.1414,
+        "median": 92.8,
+        "std": 67.84916644968885,
+        "p95": 238.0,
+        "p99": 354.5
+      },
+      "Total_Crypto_Handshake_us": {
+        "mean": 477.7472,
+        "median": 355.45,
+        "std": 253.3862203820403,
+        "p95": 867.8,
+        "p99": 1295.7
+      }
+    },
+    "X25519+ML-KEM-1024": {
+      "security_level": "Dual (Classical 128-bit + NIST Level 5)",
+      "pk_size_bytes": 1600,
+      "ct_size_bytes": 1600,
+      "total_payload_bytes": 3200,
+      "KeyGen_us": {
+        "mean": 175.82568,
+        "median": 131.0,
+        "std": 93.82843020854969,
+        "p95": 331.5,
+        "p99": 517.2
+      },
+      "Server_Encaps_Derive_us": {
+        "mean": 251.83452,
+        "median": 185.35000000000002,
+        "std": 132.55272020255268,
+        "p95": 488.8,
+        "p99": 782.1
+      },
+      "Client_Decaps_Derive_us": {
+        "mean": 148.58884,
+        "median": 110.9,
+        "std": 79.63422152128983,
+        "p95": 277.9,
+        "p99": 443.7
+      },
+      "Total_Crypto_Handshake_us": {
+        "mean": 576.24904,
+        "median": 436.25,
+        "std": 281.1109497623557,
+        "p95": 1096.1999999999998,
+        "p99": 1679.1
+      }
+    },
+    "ML-KEM-768": {
+      "security_level": "NIST Level 3 (PQC Only)",
+      "pk_size_bytes": 1184,
+      "ct_size_bytes": 1088,
+      "total_payload_bytes": 2272,
+      "KeyGen_us": {
+        "mean": 73.22832,
+        "median": 53.9,
+        "std": 40.42752194834327,
+        "p95": 143.5,
+        "p99": 217.4
+      },
+      "Server_Encaps_Derive_us": {
+        "mean": 90.36936,
+        "median": 66.6,
+        "std": 52.6117099854768,
+        "p95": 188.9,
+        "p99": 298.8
+      },
+      "Client_Decaps_Derive_us": {
+        "mean": 75.7957,
+        "median": 54.8,
+        "std": 128.30221372649586,
+        "p95": 141.7,
+        "p99": 217.0
+      },
+      "Total_Crypto_Handshake_us": {
+        "mean": 239.39338,
+        "median": 181.55,
+        "std": 175.76276653545153,
+        "p95": 455.9,
+        "p99": 708.9000000000001
+      }
+    },
+    "ML-KEM-1024": {
+      "security_level": "NIST Level 5 (PQC Only)",
+      "pk_size_bytes": 1568,
+      "ct_size_bytes": 1568,
+      "total_payload_bytes": 3136,
+      "KeyGen_us": {
+        "mean": 87.88492,
+        "median": 70.2,
+        "std": 42.38955394257281,
+        "p95": 162.2,
+        "p99": 260.7
+      },
+      "Server_Encaps_Derive_us": {
+        "mean": 100.454,
+        "median": 77.65,
+        "std": 50.49986565612088,
+        "p95": 189.7,
+        "p99": 324.3
+      },
+      "Client_Decaps_Derive_us": {
+        "mean": 75.20414,
+        "median": 59.3,
+        "std": 36.77246882863796,
+        "p95": 142.9,
+        "p99": 244.6
+      },
+      "Total_Crypto_Handshake_us": {
+        "mean": 263.54306,
+        "median": 209.45,
+        "std": 117.19675688260814,
+        "p95": 501.29999999999995,
+        "p99": 721.5999999999999
+      }
+    }
+  }
+}
